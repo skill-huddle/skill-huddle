@@ -1,0 +1,1 @@
+web: gunicorn skill_huddle.wsgi --log-file -
