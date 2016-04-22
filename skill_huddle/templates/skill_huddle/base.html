@@ -1,0 +1,40 @@
+{% load bootstrap3 %}
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>
+        {%  block title %}
+            Title
+        {% endblock %}
+    </title>
+    {% bootstrap_css %}
+
+</head>
+<body>
+
+    <div id="header">
+        {% block header %}
+            Header
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}
+            Content
+        {% endblock %}
+    </div>
+
+    <div id="footer">
+        {% block footer %}
+            Footer
+        {% endblock %}
+    </div>
+
+
+    {% bootstrap_javascript jquery=1 %}
+
+</body>
+
+</html>
