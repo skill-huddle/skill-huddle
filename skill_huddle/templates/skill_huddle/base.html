@@ -1,4 +1,6 @@
-{% load bootstrap3 %}
+<!-- Base.html serves as a template for other html files. When you use { % extends "skill_huddle/base.html" %},
+     base.html is rendered with the content of any matching { % block "blockname" %} tags replacing the default values
+     in this file. -->
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +11,6 @@
             Title
         {% endblock %}
     </title>
-    {% bootstrap_css %}
 
 </head>
 <body>
@@ -32,9 +33,5 @@
         {% endblock %}
     </div>
 
-
-    {% bootstrap_javascript jquery=1 %}
-
 </body>
-
 </html>
