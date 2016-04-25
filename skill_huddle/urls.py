@@ -6,7 +6,6 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'skill_huddle.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^$', views.index, name='index'),
-    url(r'^sh_app/', include('sh_app.urls')),
+    url(r'^', include('sh_app.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]
