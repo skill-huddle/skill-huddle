@@ -29,6 +29,8 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = (
+    'leagues.apps.LeaguesConfig',
+    'search.apps.SearchConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
