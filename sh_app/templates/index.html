@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1> Skill Huddle</h1>
+  {% if user.is_authenticated %}
+    <h1>Hello {{ user.username }}!</h1>
+  {% else %}
+    <h1>Who are you? Log in or Register!</h1>
+  {% endif %}
+{% endblock %}
