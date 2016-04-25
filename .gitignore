@@ -1,3 +1,7 @@
 venv
 *.pyc
 staticfiles
+
+# PyCharm related
+.idea
+.pycharmrc
