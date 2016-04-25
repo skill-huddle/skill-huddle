@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from sh_app.forms import UserForm, SH_User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
+
+from sh_app.forms import UserForm, SH_User
 
 def index(request):
     '''
