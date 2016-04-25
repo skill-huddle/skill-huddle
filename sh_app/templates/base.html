@@ -1,37 +1,27 @@
-<!-- Base.html serves as a template for other html files. When you use { % extends "base.html" %},
-     base.html is rendered with the content of any matching { % block "blockname" %} tags replacing the default values
-     in this file. -->
-
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>
-        {%  block title %}
-            Title
-        {% endblock %}
-    </title>
+  <head>
+    <title>Skill Huddle - {% block title %}Home{% endblock %}</title>
+  </head>
 
-</head>
-<body>
-
-    <div id="header">
-        {% block header %}
-            <a href="{% url "about" %}"> About </a>
-        {% endblock %}
+  <body>
+    <div>
+      {% block content %}{% endblock %}
     </div>
 
-    <div id="content">
-        {% block content %}
-            Content
-        {% endblock %}
+    <hr />
+    <div>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+        <li><a href="{% url 'register' %}">Register Here</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+      </ul>
     </div>
-
-    <div id="footer">
-        {% block footer %}
-            Footer
-        {% endblock %}
-    </div>
-
-</body>
+  </body>
 </html>

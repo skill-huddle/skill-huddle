@@ -1,6 +1,8 @@
 venv
 *.pyc
 staticfiles
+*.swp
+DS_Store
 
 # PyCharm related
 .idea
