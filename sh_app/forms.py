@@ -1,6 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
-from sh_app.models import SH_User
+from sh_app.models import User
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
