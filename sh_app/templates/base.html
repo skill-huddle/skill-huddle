@@ -5,23 +5,33 @@
   </head>
 
   <body>
-    <div>
+    <div id="header">
+        {% block header %}  {% endblock %}
+    </div>
+
+    <div id="notifications">
+        {% block notifications %} {% endblock %}
+    </div>
+
+    <div id="content">
       {% block content %}{% endblock %}
     </div>
 
     <hr />
-    <div>
-      <ul>
-        <li><a href="{% url 'index' %}">Home</a></li>
-        <li><a href="{% url 'about' %}">About</a></li>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
-        <li><a href="{% url 'logout' %}">Logout</a></li>
-        {% else %}
-        <li><a href="{% url 'register' %}">Register Here</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
-        {% endif %}
-      </ul>
-    </div>
+    <div id="footer">
+        {% block footer %}
+          <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'register' %}">Register Here</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
+        {% endblock %}
+    </div> <!-- end footer -->
   </body>
 </html>
