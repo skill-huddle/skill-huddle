@@ -6,20 +6,7 @@
 
   <body>
     <div id="header">
-        {% block header %}  {% endblock %}
-    </div>
-
-    <div id="notifications">
-        {% block notifications %} {% endblock %}
-    </div>
-
-    <div id="content">
-      {% block content %}{% endblock %}
-    </div>
-
-    <hr />
-    <div id="footer">
-        {% block footer %}
+        {% block header %}
           <ul>
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
@@ -32,6 +19,20 @@
             {% endif %}
           </ul>
         {% endblock %}
-    </div> <!-- end footer -->
+    </div>
+
+    <hr />
+
+    <div id="notifications">
+        {% block notifications %} {% endblock %}
+    </div>
+
+    <div id="content">
+      {% block content %} {% endblock %}
+    </div>
+
+    <div id="footer">
+        {% block footer %} {% endblock %}
+    </div>
   </body>
 </html>
