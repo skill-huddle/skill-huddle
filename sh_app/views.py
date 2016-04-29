@@ -3,8 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 
-from sh_app.forms import UserForm, LeagueForm
+from sh_app.forms import UserForm, LeagueForm, SuggestionForm
+from sh_app.models import League
 
 def index(request):
     """
@@ -143,3 +145,34 @@ def create_league(request):
         league_form = LeagueForm()
 
     return render(request, 'create_league.html', {'league_form': league_form})
+
+@login_required
+def create_suggestion(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    sh_user = request.user.sh_user
+    if league.is_member(sh_user):
+        if request.method == 'POST':
+            # User has submitted the create suggestion form
+            suggestion_form = SuggestionForm(data=request.POST)
+            if suggestion_form.is_valid():
+                # Set suggested_by and league foreign key relation
+                # Get suggestion model from form, but do not save to database
+                suggestion = suggestion_form.save(commit=False)
+                # Set foreign key relations
+                suggestion.suggested_by = sh_user
+                suggestion.league = league
+                suggestion.save()
+
+                return HttpResponseRedirect(reverse('index'))
+            else:
+                print(suggestion_form.errors)
+
+        else:
+            # GET request, serve empty SuggestionForm
+            suggestion_form = SuggestionForm()
+
+    else:
+        return HttpResponse("You must be a league member of league {} to view this page".format(league.name))
+
+    return render(request, 'create_suggestion.html', {'suggestion_form': suggestion_form, 'league': league})
+

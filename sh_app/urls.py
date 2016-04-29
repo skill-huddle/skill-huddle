@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^restricted/', views.restricted, name='restricted'),
     url(r'^leagues/create', views.create_league, name='create_league'),
+    url(r'^leagues/(?P<league_id>[0-9]+)/create_suggestion', views.create_suggestion, name='create_suggestion'),
 ]
 
