@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 from django_countries.fields import CountryField
+from localflavor.us.us_states import STATE_CHOICES
+from localflavor.us.models import USStateField
 
 class SH_User(models.Model):
     """
@@ -43,7 +45,7 @@ class League(models.Model):
     description = models.CharField(max_length=260)
     country = CountryField()
     city = models.CharField(max_length=20)
-    state = models.CharField(max_length=20, null=True, blank=True)
+    state = USStateField(blank=True, choices=STATE_CHOICES)
     date_created = models.DateTimeField(default=timezone.now)
     is_private = models.BooleanField(default=False)
 
