@@ -45,7 +45,7 @@ class League(models.Model):
     description = models.CharField(max_length=260)
     country = CountryField()
     city = models.CharField(max_length=20)
-    state = USStateField(blank=True, choices=STATE_CHOICES)
+    state = USStateField(blank=True, null=True, choices=STATE_CHOICES)
     date_created = models.DateTimeField(default=timezone.now)
     is_private = models.BooleanField(default=False)
 
