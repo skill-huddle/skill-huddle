@@ -11,3 +11,4 @@ ptyprocess==0.5.1
 simplegeneric==0.8.1
 traitlets==4.2.1
 whitenoise==2.0.6
+django-countries==3.4.1
