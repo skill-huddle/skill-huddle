@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 
-from sh_app.forms import UserForm
+from sh_app.forms import UserForm, LeagueForm
 
 def index(request):
     """
@@ -114,3 +114,32 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect(reverse('index'))
+
+@login_required
+def create_league(request):
+    if request.method == 'POST':
+        # User has submitted the create league form
+        league_form = LeagueForm(data=request.POST)
+        if league_form.is_valid():
+            # Add SH_User associated with current user to head_official, officials, league_members and save to database
+            sh_user = request.user.sh_user
+            # Get league model from form, but do not save to database
+            league = league_form.save(commit=False)
+            # Set foreign key relation
+            league.head_official = sh_user
+            # Cannot add many-to-many relations until the object already exists in database
+            league.save()
+            # Now that object exists, can set the many-to-many relations.
+            league.officials.add(sh_user)
+            league.members.add(sh_user)
+            league.save()
+
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            print(league_form.errors)
+
+    else:
+        # GET request, serve empty form
+        league_form = LeagueForm()
+
+    return render(request, 'create_league.html', {'league_form': league_form})
