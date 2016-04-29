@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'sh_app.apps.ShAppConfig',
     'django_countries',
+    'localflavor',
 )
 
 # https://github.com/SmileyChris/django-countries
