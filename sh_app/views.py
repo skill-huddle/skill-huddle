@@ -3,19 +3,19 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 
-from sh_app.forms import UserForm, SH_User
+from sh_app.forms import UserForm
 
 def index(request):
-    '''
+    """
     Serve view for home page
-    '''
+    """
     return render(request, "index.html")
 
 
 def about(request):
-    '''
+    """
     Serve view for about page
-    '''
+    """
     return render(request, "about.html")
 
 def register(request):

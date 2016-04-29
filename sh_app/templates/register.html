@@ -9,7 +9,7 @@
         {% else %}
         SH says: <strong>register here!</strong><br />
 
-        <form id="user_form" method="post" action="/register/">
+        <form id="user_form" method="post" action="{% url "register" %}">
 
             {% csrf_token %}
 
@@ -23,4 +23,3 @@
         </form>
         {% endif %}
 {% endblock %} <!-- end content -->
-
