@@ -23,6 +23,8 @@ class SH_User(models.Model):
 
     # This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(User)
+    first_name = models.CharField(max_length=30, null=True, blank=False)
+    last_name = models.CharField(max_length=30, null=True, blank=False)
 
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
