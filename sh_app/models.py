@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+from django_countries.fields import CountryField
+
 class SH_User(models.Model):
     """
     Implicit fields: 
@@ -39,7 +41,7 @@ class League(models.Model):
     """
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=260)
-    country = models.CharField(max_length=10)
+    country = CountryField()
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=20, null=True, blank=True)
     date_created = models.DateTimeField(default=timezone.now)
