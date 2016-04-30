@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import Textarea
-from sh_app.models import User, League, Suggestion
+from sh_app.models import User, SH_User, League, Suggestion
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -8,6 +8,11 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
+
+class SH_UserForm(forms.ModelForm):
+    class Meta:
+        model = SH_User
+        fields = ('first_name','last_name')
 
 class LeagueForm(forms.ModelForm):
     class Meta:
