@@ -190,3 +190,7 @@ def create_suggestion(request, league_id):
 
     return render(request, 'create_suggestion.html', {'suggestion_form': suggestion_form, 'league': league})
 
+def leagues(request):
+    list_of_leagues = League.objects.all()
+    if list_of_leagues:
+        return render(request, 'leagues.html', {'list_of_leagues': list_of_leagues})
