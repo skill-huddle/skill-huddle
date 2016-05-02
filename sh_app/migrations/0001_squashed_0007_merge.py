@@ -13,8 +13,6 @@ import sh_app.models
 
 class Migration(migrations.Migration):
 
-    replaces = [('sh_app', '0001_initial'), ('sh_app', '0002_auto_20160429_0041'), ('sh_app', '0003_auto_20160429_0041'), ('sh_app', '0004_auto_20160429_0056'), ('sh_app', '0005_auto_20160429_1549'), ('sh_app', '0006_auto_20160429_1858'), ('sh_app', '0005_auto_20160429_1446'), ('sh_app', '0007_merge')]
-
     initial = True
 
     dependencies = [

@@ -90,10 +90,6 @@ class Huddle(models.Model):
     def is_attending(self, sh_user):
         return sh_user in self.attendants.all()
 
-def validate_vote_end(date):
-    if date < timezone.now():
-            raise ValidationError("Vote must start and end in future.")
-
 def validate_vote_time(date):
         if date < timezone.now():
             raise ValidationError("Vote must start and end in future.")
