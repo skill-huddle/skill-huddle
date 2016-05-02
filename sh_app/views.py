@@ -192,8 +192,7 @@ def create_suggestion(request, league_id):
 
 def leagues(request):
     list_of_leagues = League.objects.all()
-    if list_of_leagues:
-        return render(request, 'leagues.html', {'list_of_leagues': list_of_leagues})
+    return render(request, 'leagues.html', {'list_of_leagues': list_of_leagues})
 
 def league_detail(request, league_id):
     league = get_object_or_404(League, pk=league_id)

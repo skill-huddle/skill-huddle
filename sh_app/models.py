@@ -61,7 +61,7 @@ class League(models.Model):
     def is_member(self, sh_user):
         return sh_user in self.members.all()
 
-    def is_official(self, sh_user ):
+    def is_official(self, sh_user):
         return sh_user in self.officials.all()
 
     def is_head_official(self, sh_user):
