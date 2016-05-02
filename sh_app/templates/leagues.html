@@ -1,16 +1,17 @@
+<!-- Template variables passed:
+league: League object for league associated with this page
+-->
 {% extends "base.html" %}
 
 {% block title %} Leagues {% endblock %}
 
 {% block content %}
-    {% if list_of_leagues %}
         <ul>
             {% for league in list_of_leagues %}
                 <li><a href="{% url 'league_detail' league.id %}">{{ league }}</a></li>
+            {% empty %}
+                <!--No leagues exist-->
+                <li>No leagues exist. Would you like to <a href="{% url 'create_league' %}">create one?</a></li>
             {% endfor %}
         </ul>
-    {% else %}
-        <!--No leagues exist-->
-        <h1>No leagues exist. Would you like to <a href="{% url 'create_league' %}">create one?</a></h1>
-    {% endif  %}
 {% endblock %}
