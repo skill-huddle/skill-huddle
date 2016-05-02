@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
 from sh_app.models import League
@@ -175,9 +176,10 @@ def create_suggestion(request, league_id):
                 # Set foreign key relations
                 suggestion.suggested_by = sh_user
                 suggestion.league = league
+                suggestion.voting_starts = timezone.now()
                 suggestion.save()
 
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('league_detail', args=[league_id]))
             else:
                 print(suggestion_form.errors)
 

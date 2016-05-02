@@ -12,7 +12,7 @@ class UserForm(forms.ModelForm):
 class SH_UserForm(forms.ModelForm):
     class Meta:
         model = SH_User
-        fields = ('first_name','last_name')
+        fields = ('first_name', 'last_name')
 
 class LeagueForm(forms.ModelForm):
     class Meta:
@@ -28,7 +28,7 @@ class LeagueForm(forms.ModelForm):
 class SuggestionForm(forms.ModelForm):
     class Meta:
         model = Suggestion
-        fields = ('name', 'description', 'voting_starts', 'voting_ends')
+        fields = ('name', 'description', 'voting_ends')
         help_texts = {
             'description': 'Maximum {} characters'.format(Suggestion._meta.get_field('description').max_length)
         }
