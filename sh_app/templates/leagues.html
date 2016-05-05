@@ -6,6 +6,7 @@ league: League object for league associated with this page
 {% block title %} Leagues {% endblock %}
 
 {% block content %}
+    <h1>Leagues</h1>
         <ul>
             {% for league in list_of_leagues %}
                 <li><a href="{% url 'league_detail' league.id %}">{{ league }}</a></li>

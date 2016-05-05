@@ -8,9 +8,10 @@ league: League object for league associated with this page
     <p>{{ league.description }}</p>
     <p>Country: {{ league.country.name }}</p>
     <p>State: {{ league.state }}</p>
+    <p>City: {{ league.city }}</p>
     <p>Created: {{ league.date_created }}</p>
     <p>Head official: {{ league.head_official }}</p>
-
+        <h2> Upcoming Huddles</h2>
         <ul>
             {% for huddle in league.huddles.all %}
                 <li>{{ huddle}} on {{ huddle.date }}</li>
@@ -20,6 +21,7 @@ league: League object for league associated with this page
             {% endfor %}
         </ul>
         <hr>
+        <h2> Suggestions </h2>
         <ul>
             {% for suggestion in league.suggestions.all %}
                 <li>{{ suggestion}} with vote ending on {{suggestion.voting_ends}}</li>
