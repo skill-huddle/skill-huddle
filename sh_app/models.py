@@ -68,6 +68,7 @@ class League(models.Model):
         return sh_user == self.head_official
 
 
+
 class Huddle(models.Model):
     """
     No implicit fields
@@ -89,6 +90,7 @@ class Huddle(models.Model):
 
     def is_attending(self, sh_user):
         return sh_user in self.attendants.all()
+
 
 def validate_vote_time(date):
         if date < timezone.now():
@@ -126,3 +128,9 @@ class Suggestion(models.Model):
 
     def is_voted_on_by(self, sh_user):
         return self.is_downvoted_by(sh_user) or self.is_upvoted_by(sh_user)
+
+    def tally_votes(self):
+        num_upvotes = self.upvotes.count()
+        num_downvotes = self.downvotes.count()
+        tally = num_upvotes - num_downvotes
+        return tally
