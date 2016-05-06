@@ -2,8 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
-from sh_app.forms import UserForm, SH_UserForm
+from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
+from sh_app.models import League
+
 
 def index(request):
     """
@@ -125,4 +130,72 @@ def user_logout(request):
     logout(request)
 
     # Take the user back to the homepage.
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(reverse('index'))
+
+@login_required
+def create_league(request):
+    if request.method == 'POST':
+        # User has submitted the create league form
+        league_form = LeagueForm(data=request.POST)
+        if league_form.is_valid():
+            # Add SH_User associated with current user to head_official, officials, league_members and save to database
+            sh_user = request.user.sh_user
+            # Get league model from form, but do not save to database
+            league = league_form.save(commit=False)
+            # Set foreign key relation
+            league.head_official = sh_user
+            # Cannot add many-to-many relations until the object already exists in database
+            league.save()
+            # Now that object exists, can set the many-to-many relations.
+            league.officials.add(sh_user)
+            league.members.add(sh_user)
+            league.save()
+
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            print(league_form.errors)
+
+    else:
+        # GET request, serve empty form
+        league_form = LeagueForm()
+
+    return render(request, 'create_league.html', {'league_form': league_form})
+
+@login_required
+def create_suggestion(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    sh_user = request.user.sh_user
+    if league.is_member(sh_user):
+        if request.method == 'POST':
+            # User has submitted the create suggestion form
+            suggestion_form = SuggestionForm(data=request.POST)
+            if suggestion_form.is_valid():
+                # Set suggested_by and league foreign key relation
+                # Get suggestion model from form, but do not save to database
+                suggestion = suggestion_form.save(commit=False)
+                # Set foreign key relations
+                suggestion.suggested_by = sh_user
+                suggestion.league = league
+                suggestion.voting_starts = timezone.now()
+                suggestion.save()
+
+                return HttpResponseRedirect(reverse('league_detail', args=[league_id]))
+            else:
+                print(suggestion_form.errors)
+
+        else:
+            # GET request, serve empty SuggestionForm
+            suggestion_form = SuggestionForm()
+
+    else:
+        return HttpResponse("You must be a league member of league {} to view this page".format(league.name))
+
+    return render(request, 'create_suggestion.html', {'suggestion_form': suggestion_form, 'league': league})
+
+def leagues(request):
+    list_of_leagues = League.objects.all()
+    return render(request, 'leagues.html', {'list_of_leagues': list_of_leagues})
+
+def league_detail(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    return render(request, 'league_detail.html', {'league': league})
