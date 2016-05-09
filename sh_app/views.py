@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
-from sh_app.models import League
+from sh_app.models import League, Suggestion
 
 
 def index(request):
@@ -191,6 +191,11 @@ def create_suggestion(request, league_id):
         return HttpResponse("You must be a league member of league {} to view this page".format(league.name))
 
     return render(request, 'create_suggestion.html', {'suggestion_form': suggestion_form, 'league': league})
+
+@login_required
+def suggestion_detail(request, suggestion_id):
+    suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
+    return render(request, 'suggestion_detail.html', {'suggestion': suggestion})
 
 def leagues(request):
     list_of_leagues = League.objects.all()
