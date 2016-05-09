@@ -24,7 +24,7 @@ league: League object for league associated with this page
         <h2> Suggestions </h2>
         <ul>
             {% for suggestion in league.suggestions.all %}
-                <li>{{ suggestion}} with vote ending on {{suggestion.voting_ends}}</li>
+                <li><a href="{% url 'suggestion_detail' suggestion.id %}">{{ suggestion}}</a> with vote ending on {{suggestion.voting_ends}}</li>
             {% empty %}
                 <!-- No suggestions in league -->
                 <li>

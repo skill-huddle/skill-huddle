@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^leagues/create/$', views.create_league, name='create_league'),
     url(r'^leagues/(?P<league_id>[0-9]+)/$', views.league_detail, name='league_detail'),
     url(r'^leagues/(?P<league_id>[0-9]+)/create_suggestion/$', views.create_suggestion, name='create_suggestion'),
+    url(r'^suggestion/(?P<suggestion_id>[0-9]+)/$', views.suggestion_detail, name='suggestion_detail'),
 ]
-
