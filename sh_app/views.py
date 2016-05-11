@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
-from sh_app.models import League, Suggestion
+from sh_app.models import League, Suggestion, SH_User
 
 
 def index(request):
@@ -122,6 +122,10 @@ def user_login(request):
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
 
+@login_required
+def profile(request):
+    profile = get_object_or_404(SH_User, user=request.user)
+    return render(request, 'profile.html', {'profile': profile})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required
