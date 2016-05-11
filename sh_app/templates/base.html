@@ -6,8 +6,8 @@
 
   <body>
     <div id="header">
+        <ul>
         {% block header %}
-          <ul>
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
@@ -19,8 +19,8 @@
             <li><a href="{% url 'register' %}">Register Here</a></li>
             <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
-          </ul>
         {% endblock %}
+        </ul>
     </div>
 
     <hr />
