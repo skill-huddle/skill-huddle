@@ -1,11 +1,23 @@
 {% extends 'base.html' %}
 {% comment %}
 Template variables passed:
+profile - an SH_User object
 {% endcomment %}
 
 {% block title %} Profile {% endblock %}
 
 {% block content %}
-    <p> {{profile.first_name}} </p>
-    <p> {{profile.last_name}} </p>
+    <h1> Basic Info </h1>
+    <p> First Name: {{profile.first_name}} </p>
+    <p> Last Name: {{profile.last_name}} </p>
+    <p> Username: {{profile.user.username}} </p>
+    <p> E-mail: {{profile.user.email}} </p>
+
+    <h1> Your Leagues </h1>
+    {% for leagues in profile.LM_of.all %}
+        <li> {{leagues}} </li>
+    {% empty %}
+        <p> You are not part of any leagues! Go join one now! </p>
+    {% endfor %}
+
 {% endblock %}
