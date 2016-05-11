@@ -1,36 +1,46 @@
-<!-- Template variables passed:
-league: League object for league associated with this page
--->
 {% extends 'base.html' %}
+{% comment %}
+Template variables passed:
+league: League object for league associated with this page
+is_head_official: Bool indicating whether user is a head official in this league
+is_official: Bool indicating whether user is an official in this league
+is_member: Bool indicating whether user is a member of this league
+{% endcomment %}
+
 {% block title %} {{ league }} Home {% endblock %}
+{% block header %}
+    {{ block.super }}
+    {% if is_head_official %}
+        <li><a href="{% url 'manage_league' league.id %}">Manage league</a></li>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <h1> {{ league }}</h1>
     <p>{{ league.description }}</p>
-    <p>Country: {{ league.country.name }}</p>
-    <p>State: {{ league.state }}</p>
+    <p>Country: {{ league.get_country_display }}</p>
+    <p>State: {{ league.get_state_display }}</p>
     <p>City: {{ league.city }}</p>
     <p>Created: {{ league.date_created }}</p>
     <p>Head official: {{ league.head_official }}</p>
         <h2> Upcoming Huddles</h2>
         <ul>
             {% for huddle in league.huddles.all %}
-                <li>{{ huddle}} on {{ huddle.date }}</li>
+            <li>{{ huddle}} on {{ huddle.date }}</li>
             {% empty %}
-                <!-- No huddles in league -->
-                <li>No huddles exist for league {{ league }}</li>
+            <li>No huddles exist for league {{ league }}</li>
             {% endfor %}
         </ul>
         <hr>
         <h2> Suggestions </h2>
         <ul>
             {% for suggestion in league.suggestions.all %}
-                <li>{{ suggestion}} with vote ending on {{suggestion.voting_ends}}</li>
+            <li><a href="{% url 'suggestion_detail' suggestion.id %}">{{ suggestion}}</a> with vote ending on {{suggestion.voting_ends}}</li>
             {% empty %}
-                <!-- No suggestions in league -->
-                <li>
-                    No suggestions exist for league {{ league }}. Would you like to
-                    <a href="{% url 'create_suggestion' league.id %}">create one?</a>
-                </li>
+            <li>
+            No suggestions exist for league {{ league }}. Would you like to
+            <a href="{% url 'create_suggestion' league.id %}">create one?</a>
+            </li>
             {% endfor %}
         </ul>
 {% endblock %}
