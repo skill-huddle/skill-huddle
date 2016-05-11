@@ -12,6 +12,7 @@
             <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
             <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
             <li><a href="{% url 'create_league' %}">Create a league</a></li>
             <li><a href="{% url 'leagues' %}">View leagues</a></li>
