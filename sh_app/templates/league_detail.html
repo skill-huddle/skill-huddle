@@ -43,4 +43,11 @@ is_member: Bool indicating whether user is a member of this league
             </li>
             {% endfor %}
         </ul>
+
+        {% if not is_member %}
+        <form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
+            {% csrf_token %}
+            <input type="submit" name="submit" value="Join League"/>
+        </form>
+        {% endif %}
 {% endblock %}

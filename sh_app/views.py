@@ -203,16 +203,33 @@ def leagues(request):
 
 def league_detail(request, league_id):
     league = get_object_or_404(League, pk=league_id)
+
     if request.user.is_authenticated():
         sh_user = request.user.sh_user
-        is_head_official = league.is_head_official(sh_user)
-        is_official = league.is_official(sh_user)
-        is_member = league.is_member(sh_user)
-    return render(request, 'league_detail.html',
-                  {'league': league,
-                   'is_head_official': is_head_official,
-                   'is_official': is_official,
-                   'is_member': is_member})
+        if request.method == "POST":
+            # Clicked join league
+            league.members.add(sh_user)
+            league.save()
+            is_member = True
+            is_head_official = False
+            is_official = False
+        else:
+            # Get request
+            is_head_official = league.is_head_official(sh_user)
+            is_official = league.is_official(sh_user)
+            is_member = league.is_member(sh_user)
+        return render(request, 'league_detail.html',
+                      {'league': league,
+                       'is_head_official': is_head_official,
+                       'is_official': is_official,
+                       'is_member': is_member})
+    else:
+        # User not logged in
+        return render(request, 'league_detail.html',
+                      {'league': league,
+                       'is_head_official': False,
+                       'is_official': False,
+                       'is_member': False})
 
 @login_required
 def manage_league(request, league_id):
