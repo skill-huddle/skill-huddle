@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
-from sh_app.models import League
+from sh_app.models import League, Suggestion
 
 
 def index(request):
@@ -192,10 +192,39 @@ def create_suggestion(request, league_id):
 
     return render(request, 'create_suggestion.html', {'suggestion_form': suggestion_form, 'league': league})
 
+@login_required
+def suggestion_detail(request, suggestion_id):
+    suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
+    return render(request, 'suggestion_detail.html', {'suggestion': suggestion})
+
 def leagues(request):
     list_of_leagues = League.objects.all()
     return render(request, 'leagues.html', {'list_of_leagues': list_of_leagues})
 
 def league_detail(request, league_id):
     league = get_object_or_404(League, pk=league_id)
-    return render(request, 'league_detail.html', {'league': league})
+    if request.user.is_authenticated():
+        sh_user = request.user.sh_user
+        is_head_official = league.is_head_official(sh_user)
+        is_official = league.is_official(sh_user)
+        is_member = league.is_member(sh_user)
+    return render(request, 'league_detail.html',
+                  {'league': league,
+                   'is_head_official': is_head_official,
+                   'is_official': is_official,
+                   'is_member': is_member})
+
+@login_required
+def manage_league(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    sh_user = request.user.sh_user
+    if league.is_head_official(sh_user):
+        list_of_members = league.members.all()
+        head_official = league.head_official
+        return render(request, 'manage_league.html',
+                      {'league': league,
+                       'list_of_members': list_of_members,
+                       'head_official': head_official})
+    else:
+        # User is not a head official
+        return HttpResponse("You must be a head official of league {} to view this page".format(league.name))

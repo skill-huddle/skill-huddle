@@ -1,7 +1,7 @@
-<!-- Template variables passed:
-league: League object for league associated with this page
--->
 {% extends "base.html" %}
+{% comment %} Template variables passed:
+league: League object for league associated with this page
+{% endcomment %}
 
 {% block title %} Leagues {% endblock %}
 
@@ -9,10 +9,9 @@ league: League object for league associated with this page
     <h1>Leagues</h1>
         <ul>
             {% for league in list_of_leagues %}
-                <li><a href="{% url 'league_detail' league.id %}">{{ league }}</a></li>
+            <li><a href="{% url 'league_detail' league.id %}">{{ league }}</a></li>
             {% empty %}
-                <!--No leagues exist-->
-                <li>No leagues exist. Would you like to <a href="{% url 'create_league' %}">create one?</a></li>
+            <li>No leagues exist. Would you like to <a href="{% url 'create_league' %}">create one?</a></li>
             {% endfor %}
         </ul>
 {% endblock %}
