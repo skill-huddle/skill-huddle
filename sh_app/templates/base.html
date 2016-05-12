@@ -1,41 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Skill Huddle - {% block title %}Home{% endblock %}</title>
-  </head>
+{% extends 'bootstrap3/bootstrap3.html' %}
+{% load bootstrap3 %}
 
-  <body>
-    <div id="header">
-        <ul>
-        {% block header %}
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'restricted' %}">Restricted Page</a></li>
-            <li><a href="{% url 'profile' %}">Profile</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-            <li><a href="{% url 'create_league' %}">Create a league</a></li>
-            <li><a href="{% url 'leagues' %}">View leagues</a></li>
-            {% else %}
-            <li><a href="{% url 'register' %}">Register Here</a></li>
-            <li><a href="{% url 'login' %}">Login</a></li>
-            {% endif %}
-        {% endblock %}
-        </ul>
-    </div>
+{% block bootstrap3_title %}Skill Huddle - {% block title %}Home{% endblock %}{% endblock %}
 
-    <hr />
-
-    <div id="notifications">
-        {% block notifications %} {% endblock %}
-    </div>
-
-    <div id="content">
-      {% block content %} {% endblock %}
-    </div>
-
-    <div id="footer">
-        {% block footer %} {% endblock %}
-    </div>
-  </body>
-</html>
+{% block bootstrap3_content %}
+{% include "navigation.html" %}
+<div id="content" class="container">
+  {% block content %} {% endblock %}
+</div>
+{% endblock %}
