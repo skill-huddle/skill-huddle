@@ -235,12 +235,27 @@ def league_detail(request, league_id):
 def manage_league(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     sh_user = request.user.sh_user
+
     if league.is_head_official(sh_user):
+        if request.method == "POST":
+            # Promoted or demoted the sh_user
+            for key, value in request.POST.items():
+                if "demote" in key:
+                    target_user = key.split('_')[1]
+                    league.officials.remove(target_user)
+                    league.save()
+                elif "promote" in key:
+                    target_user = key.split('_')[1]
+                    league.officials.add(target_user)
+                    league.save()
+
         list_of_members = league.members.all()
+        list_of_officials = league.officials.all()
         head_official = league.head_official
         return render(request, 'manage_league.html',
                       {'league': league,
                        'list_of_members': list_of_members,
+                       'list_of_officials': list_of_officials,
                        'head_official': head_official})
     else:
         # User is not a head official
