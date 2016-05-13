@@ -1,23 +1,38 @@
 {% extends 'base.html' %}
 {% comment %}
 Template variables passed:
-profile - an SH_User object
+sh_user - an SH_User object
+lm_list - list of leagues where sh_user is a member
+official_list - list of leagues where sh_user is an official
 {% endcomment %}
 
 {% block title %} Profile {% endblock %}
 
 {% block content %}
     <h1> Basic Info </h1>
-    <p> First Name: {{profile.first_name}} </p>
-    <p> Last Name: {{profile.last_name}} </p>
-    <p> Username: {{profile.user.username}} </p>
-    <p> E-mail: {{profile.user.email}} </p>
+    <p> First Name: {{sh_user.first_name}} </p>
+    <p> Last Name: {{sh_user.last_name}} </p>
+    <p> Username: {{sh_user.user.username}} </p>
+    <p> E-mail: {{sh_user.user.email}} </p>
 
-    <h1> Your Leagues </h1>
-    {% for leagues in profile.LM_of.all %}
-        <li> {{leagues}} </li>
+    <h1>  Member of </h1>
+    <ul>
+    {% for league in lm_list %}
+        <li><a href="{% url 'league_detail' league.id %}"> {{ league }} </a> </li>
     {% empty %}
-        <p> You are not part of any leagues! Go join one now! </p>
+        <p> {{ sh_user }} is not part of any leagues </p>
     {% endfor %}
-
+    </ul>
+    <h1> Official of </h1>
+    <ul>
+    {% for league in official_list %}
+        <li><a href="{% url 'league_detail' league.id %}"> {{ league }} </a>
+            {% if sh_user == league.head_official %}
+                (Head Official)
+            {% endif %}
+        </li>
+    {% empty %}
+        <p> {{ sh_user }} is not an official in any leagues </p>
+    {% endfor %}
+    </ul>
 {% endblock %}
