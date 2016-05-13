@@ -253,14 +253,13 @@ def manage_league(request, league_id):
                     league.officials.add(target_user)
                     league.save()
 
-        list_of_members = league.members.all()
-        list_of_officials = league.officials.all()
-        head_official = league.head_official
+        list_of_officials = set(league.officials.all()) - set([sh_user])
+        list_of_members = set(league.members.all()) - list_of_officials - set([sh_user])
         return render(request, 'manage_league.html',
                       {'league': league,
                        'list_of_members': list_of_members,
                        'list_of_officials': list_of_officials,
-                       'head_official': head_official})
+                       'head_official': sh_user})
     else:
         # User is not a head official
         return HttpResponse("You must be a head official of league {} to view this page".format(league.name))
