@@ -123,9 +123,11 @@ def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
 
 @login_required
-def profile(request):
-    profile = get_object_or_404(SH_User, user=request.user)
-    return render(request, 'profile.html', {'profile': profile})
+def profile(request, sh_user_id):
+    sh_user = get_object_or_404(SH_User, pk=sh_user_id)
+    lm_list = set(sh_user.LM_of.all()) - set(sh_user.Official_of.all())
+    official_list = sh_user.Official_of.all()
+    return render(request, 'profile.html', {'sh_user': sh_user, 'lm_list': lm_list, 'official_list': official_list})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required
