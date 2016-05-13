@@ -36,7 +36,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sh_app.apps.ShAppConfig',
+    'django_countries',
+    'localflavor',
+    'bootstrap3',
 )
+
+# https://github.com/SmileyChris/django-countries
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Suggestion Detail{% endblock %}
+
+{% block content %}
+<h1>Suggestion for the {{ suggestion.league }} League</h1>
+<h2>{{ suggestion }}</h2>
+<p>Description: {{ suggestion.description }}</p>
+<p>Is accepted: {{ suggestion.is_accepted }}</p>
+<p>Net vote: {{ suggestion.tally_votes }}</p>
+<p>Voting starts: {{ suggestion.voting_starts }}</p>
+<p>Voting ends: {{ suggestion.voting_ends }}</p>
+<form action="{% url 'suggestion_detail' suggestion.id %}" method="post">
+    {% csrf_token %}
+    {% if not already_voted %}
+    <p>Would you like to vote?</p>
+    <input type="submit" name="upvote" value="Up vote"/>
+    <input type="submit" name="downvote" value="Down vote"/>
+    {% elif already_upvoted %}
+    <p>Change your vote?</p>
+    <input type="submit" disabled name="upvote" value="Up vote"/>
+    <input type="submit" name="downvote" value="Down vote"/>
+    {% else %}
+    <p>Change your vote?</p>
+    <input type="submit" name="upvote" value="Up vote"/>
+    <input type="submit" disabled name="downvote" value="Down vote"/>
+    {% endif %}
+</form>
+{% endblock %}

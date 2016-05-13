@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load bootstrap3 %}
+
+{% block title %}Create suggestion{% endblock %}
+
+{% block content %}
+<form id="create_suggestion_form" method="post" action="{% url 'create_suggestion' league.id %}">
+    {% csrf_token %}
+    {% bootstrap_form suggestion_form %}
+    {% buttons submit='Create Suggestion' %}{% endbuttons %}
+</form>
+{% endblock %}

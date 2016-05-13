@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% comment %}
+Template variables passed:
+league: League object for league associated with this page
+is_head_official: Bool indicating whether user is a head official in this league
+is_official: Bool indicating whether user is an official in this league
+is_member: Bool indicating whether user is a member of this league
+{% endcomment %}
+
+{% block title %}{{ league }}{% endblock %}
+
+{% block content %}
+<h1> {{ league }}</h1>
+{% if is_head_official %}
+<p><a href="{% url 'manage_league' league.id %}">Manage League</a></p>
+{% endif %}
+<p>{{ league.description }}</p>
+<p>Country: {{ league.get_country_display }}</p>
+<p>State: {{ league.get_state_display }}</p>
+<p>City: {{ league.city }}</p>
+<p>Created: {{ league.date_created }}</p>
+<p>Head official: <a href="{% url 'profile' league.head_official.id %}"> {{ league.head_official }} </a></p>
+<h2>Upcoming Huddles</h2>
+<ul>
+    {% for huddle in league.huddles.all %}
+    <li>{{ huddle}} on {{ huddle.date }}</li>
+    {% empty %}
+    <li>No huddles exist for league {{ league }}</li>
+    {% endfor %}
+</ul>
+<hr>
+<h2>Suggestions</h2>
+<p><a href="{% url 'create_suggestion' league.id %}">Create Suggestion</a></p>
+<ul>
+    {% for suggestion in league.suggestions.all %}
+    <li><a href="{% url 'suggestion_detail' suggestion.id %}">{{ suggestion}}</a> with vote ending on {{suggestion.voting_ends}}</li>
+    {% empty %}
+    <li>
+    No suggestions exist for league {{ league }}.
+    </li>
+    {% endfor %}
+</ul>
+{% if not is_member %}
+<form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
+    {% csrf_token %}
+    <input type="submit" name="submit" value="Join League"/>
+</form>
+{% endif %}
+{% endblock %}
