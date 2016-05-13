@@ -10,7 +10,7 @@ from localflavor.us.models import USStateField
 
 class SH_User(models.Model):
     """
-    Implicit fields: 
+    Implicit fields:
         HOfficial_of
         Official_of
         LM_of
@@ -39,7 +39,7 @@ class SH_User(models.Model):
 
 class League(models.Model):
     """
-    Implicit fields: 
+    Implicit fields:
         huddles
         suggestions
     """

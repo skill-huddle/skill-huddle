@@ -202,7 +202,28 @@ def create_suggestion(request, league_id):
 @login_required
 def suggestion_detail(request, suggestion_id):
     suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
-    return render(request, 'suggestion_detail.html', {'suggestion': suggestion})
+    sh_user = request.user.sh_user
+    if not suggestion.league.is_member(sh_user):
+        return HttpResponse("You must be a league member of league {} to view this page".format(suggestion.league.name))
+
+    if request.method == 'POST':
+        for key in request.POST.keys():
+            if "upvote" in key:
+                suggestion.downvotes.remove(sh_user)
+                suggestion.upvotes.add(sh_user)
+                suggestion.save()
+            elif "downvote" in key:
+                suggestion.upvotes.remove(sh_user)
+                suggestion.downvotes.add(sh_user)
+                suggestion.save()
+
+    context = {
+        'suggestion': suggestion,
+        'already_voted': suggestion.is_voted_on_by(sh_user),
+        'already_upvoted': suggestion.is_upvoted_by(sh_user),
+    }
+
+    return render(request, 'suggestion_detail.html', context)
 
 def leagues(request):
     list_of_leagues = League.objects.all()
