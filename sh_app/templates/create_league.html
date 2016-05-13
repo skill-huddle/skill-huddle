@@ -2,12 +2,12 @@
 
 {% load bootstrap3 %}
 
-{% block title %} Create league {% endblock %}
+{% block title %}Create league{% endblock %}
 
 {% block content %}
-    <form id="create_league_form" method="post" action="{% url 'create_league' %}">
-        {% csrf_token %}
-        {% bootstrap_form league_form %}
-        {% buttons submit='Create League' %}{% endbuttons %}
-    </form>
+<form id="create_league_form" method="post" action="{% url 'create_league' %}">
+    {% csrf_token %}
+    {% bootstrap_form league_form %}
+    {% buttons submit='Create League' %}{% endbuttons %}
+</form>
 {% endblock %}
