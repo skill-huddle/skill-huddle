@@ -239,7 +239,7 @@ def league_detail(request, league_id):
                        'is_member': False})
 
 @login_required
-def manage_league(request, league_id):
+def manage_league_membership(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     sh_user = request.user.sh_user
 
@@ -258,7 +258,7 @@ def manage_league(request, league_id):
 
         list_of_officials = set(league.officials.all()) - set([sh_user])
         list_of_members = set(league.members.all()) - list_of_officials - set([sh_user])
-        return render(request, 'manage_league.html',
+        return render(request, 'manage_league_membership.html',
                       {'league': league,
                        'list_of_members': list_of_members,
                        'list_of_officials': list_of_officials,
