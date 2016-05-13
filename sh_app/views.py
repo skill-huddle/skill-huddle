@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
-from sh_app.models import League, Suggestion
+from sh_app.models import League, Suggestion, SH_User
 
 
 def index(request):
@@ -122,6 +122,10 @@ def user_login(request):
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
 
+@login_required
+def profile(request):
+    profile = get_object_or_404(SH_User, user=request.user)
+    return render(request, 'profile.html', {'profile': profile})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required
@@ -235,13 +239,27 @@ def league_detail(request, league_id):
 def manage_league(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     sh_user = request.user.sh_user
+
     if league.is_head_official(sh_user):
-        list_of_members = league.members.all()
-        head_official = league.head_official
+        if request.method == "POST":
+            # Promoted or demoted the sh_user
+            for key, value in request.POST.items():
+                if "demote" in key:
+                    target_user = key.split('_')[1]
+                    league.officials.remove(target_user)
+                    league.save()
+                elif "promote" in key:
+                    target_user = key.split('_')[1]
+                    league.officials.add(target_user)
+                    league.save()
+
+        list_of_officials = set(league.officials.all()) - set([sh_user])
+        list_of_members = set(league.members.all()) - list_of_officials - set([sh_user])
         return render(request, 'manage_league.html',
                       {'league': league,
                        'list_of_members': list_of_members,
-                       'head_official': head_official})
+                       'list_of_officials': list_of_officials,
+                       'head_official': sh_user})
     else:
         # User is not a head official
         return HttpResponse("You must be a head official of league {} to view this page".format(league.name))
