@@ -17,7 +17,7 @@ class SH_UserForm(forms.ModelForm):
 class LeagueForm(forms.ModelForm):
     class Meta:
         model = League
-        fields = ('name', 'description', 'country', 'city', 'state', 'is_private')
+        fields = ('name', 'description', 'country', 'city', 'state')
         help_texts = {
             'description': 'Maximum {} characters'.format(League._meta.get_field('description').max_length)
         }
