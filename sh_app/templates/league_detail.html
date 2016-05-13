@@ -20,7 +20,7 @@ is_member: Bool indicating whether user is a member of this league
 <p>State: {{ league.get_state_display }}</p>
 <p>City: {{ league.city }}</p>
 <p>Created: {{ league.date_created }}</p>
-<p>Head official: {{ league.head_official }}</p>
+<p>Head official: <a href="{% url 'profile' league.head_official.id %}"> {{ league.head_official }} </a></p>
 <h2>Upcoming Huddles</h2>
 <ul>
     {% for huddle in league.huddles.all %}
@@ -41,7 +41,6 @@ is_member: Bool indicating whether user is a member of this league
     </li>
     {% endfor %}
 </ul>
-
 {% if not is_member %}
 <form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
     {% csrf_token %}
