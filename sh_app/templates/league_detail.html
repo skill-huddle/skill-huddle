@@ -8,15 +8,12 @@ is_member: Bool indicating whether user is a member of this league
 {% endcomment %}
 
 {% block title %} {{ league }} Home {% endblock %}
-{% block header %}
-    {{ block.super }}
-    {% if is_head_official %}
-        <li><a href="{% url 'manage_league' league.id %}">Manage league</a></li>
-    {% endif %}
-{% endblock %}
 
 {% block content %}
     <h1> {{ league }}</h1>
+    {% if is_head_official %}
+    <p><a href="{% url 'manage_league' league.id %}">Manage League</a></p>
+    {% endif %}
     <p>{{ league.description }}</p>
     <p>Country: {{ league.get_country_display }}</p>
     <p>State: {{ league.get_state_display }}</p>
@@ -33,13 +30,13 @@ is_member: Bool indicating whether user is a member of this league
         </ul>
         <hr>
         <h2> Suggestions </h2>
+        <p><a href="{% url 'create_suggestion' league.id %}">Create Suggestion</a></p>
         <ul>
             {% for suggestion in league.suggestions.all %}
             <li><a href="{% url 'suggestion_detail' suggestion.id %}">{{ suggestion}}</a> with vote ending on {{suggestion.voting_ends}}</li>
             {% empty %}
             <li>
-            No suggestions exist for league {{ league }}. Would you like to
-            <a href="{% url 'create_suggestion' league.id %}">create one?</a>
+            No suggestions exist for league {{ league }}.
             </li>
             {% endfor %}
         </ul>
