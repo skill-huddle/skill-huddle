@@ -16,36 +16,28 @@ head_official: HO of the league
     <h1>Officials</h1>
     <ul>
     {% for sh_user in list_of_officials %}
-    {% if sh_user == head_official and forloop.last %}
-        <li>{{ league }} has no officials</li>
-    {% else %}
-    {% if sh_user != head_official %}
         <li> {{ sh_user }}
             <form id="demote_form" method="POST" action="{% url "manage_league" league.id %}">
             {% csrf_token %}
             <input type="submit" name="demote_{{ sh_user.id }}" value="Demote"/>
             </form>
         </li>
-    {% endif %}
-    {% endif %}
+    {% empty %}
+        <li>{{ league }} has no officials</li>
     {% endfor %}
     </ul>
 
     <h1>Members</h1>
     <ul>
     {% for sh_user in list_of_members %}
-    {% if sh_user == head_official and forloop.last %}
-        <li>{{ league }} has no members</li>
-    {% else %}
-    {% if sh_user not in list_of_officials %}
         <li> {{ sh_user }}
             <form id="promote_form" method="POST" action="{% url "manage_league" league.id %}">
             {% csrf_token %}
             <input type="submit" name="promote_{{ sh_user.id }}" value="Promote"/>
             </form>
         </li>
-    {% endif %}
-    {% endif %}
+    {% empty %}
+        <li>{{ league }} has no members</li>
     {% endfor %}
     </ul>
 {% endblock %}
