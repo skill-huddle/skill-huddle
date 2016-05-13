@@ -266,3 +266,23 @@ def manage_league_membership(request, league_id):
     else:
         # User is not a head official
         return HttpResponse("You must be a head official of league {} to view this page".format(league.name))
+
+@login_required
+def manage_league_suggestions(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+
+    # Redirect if not official
+    if not league.is_official(request.user.sh_user):
+        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+
+    # Update all suggestion approval statuses for the league
+    suggestions_vote_ended_not_approved = league.suggestions.filter(voting_ends__lte=timezone.now()).exclude(is_accepted=True)
+    for suggestion in suggestions_vote_ended_not_approved:
+        if suggestion.tally_votes() > 5:
+            suggestion.is_accepted = True
+            suggestion.save()
+
+    list_approved_suggestions = league.suggestions.filter(is_accepted=True)
+    return render(request, 'manage_league_suggestions.html',
+                  {'league': league,
+                   'list_of_approved_suggestions': list_approved_suggestions})
