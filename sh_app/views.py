@@ -6,8 +6,8 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
-from sh_app.models import League, Suggestion, SH_User
+from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm, HuddleForm
+from sh_app.models import League, Suggestion, SH_User, Huddle
 
 
 def index(request):
@@ -307,3 +307,36 @@ def manage_league_suggestions(request, league_id):
     return render(request, 'manage_league_suggestions.html',
                   {'league': league,
                    'list_of_approved_suggestions': list_approved_suggestions})
+
+@login_required
+def create_huddle(request, suggestion_id):
+    suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
+
+    # Redirect if not official
+    if not suggestion.league.is_official(request.user.sh_user):
+        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+
+    if request.method == 'POST':
+        huddle_form = HuddleForm(data=request.POST)
+        if huddle_form.is_valid():
+            huddle = huddle_form.save(commit=False)
+            huddle.league = suggestion.league
+            huddle.save()
+            huddle.experts.add(request.user.sh_user)
+            huddle.attendants.add(request.user.sh_user)
+            huddle.save()
+            suggestion.is_achieved = True
+            suggestion.save()
+
+            return HttpResponseRedirect(reverse('league_detail', args=[suggestion.league.id]))
+    else:
+        huddle = Huddle()
+        huddle.name = suggestion.name
+        huddle.description = suggestion.description
+        huddle.league = suggestion.league
+        huddle_form = HuddleForm(instance=huddle)
+
+    return render(
+        request,
+        'create_huddle.html',
+        {'huddle_form': huddle_form, 'suggestion_id': suggestion_id})
