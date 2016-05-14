@@ -41,7 +41,8 @@ is_member: Bool indicating whether user is a member of this league
 <div class="list-group">
     {% for huddle in league.huddles.all %}
     <a class="list-group-item" href="">
-      <h4>{{ huddle}} <small>on {{ huddle.date }}</small></h4>
+      <span class="list-group-item-heading">{{ huddle}}</span> -
+      <span class="list-group-item-text">on {{ huddle.date }}</span>
     </a>
     {% endfor %}
 </div>
@@ -50,12 +51,13 @@ is_member: Bool indicating whether user is a member of this league
 {% endif %}
 
 <h2>Suggestions</h2>
-<p><a class="btn btn-default" href="{% url 'create_suggestion' league.id %}">Create a suggestion</a></p>
+<p><a class="btn btn-primary" href="{% url 'create_suggestion' league.id %}">Create a suggestion</a></p>
 {% if league.suggestions.all %}
 <div class="list-group">
     {% for suggestion in league.suggestions.all %}
     <a class="list-group-item" href="{% url 'suggestion_detail' suggestion.id %}">
-      <h4>{{ suggestion}} <small>voting ends {{suggestion.voting_ends}}</small></h4>
+      <span class="list-group-item-heading">{{ suggestion}}</span> -
+      <span class="list-group-item-text">voting ends {{suggestion.voting_ends}}</span>
     </a>
     {% endfor %}
 </div>
