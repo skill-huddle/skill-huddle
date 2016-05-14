@@ -16,8 +16,8 @@
     {% csrf_token %}
     {% if not already_voted %}
     <p>Would you like to vote?</p>
-    <button class="btn btn-default" type="submit" name="upvote" value="Up vote"/>
-    <button class="btn btn-default" type="submit" name="downvote" value="Down vote"/>
+    <button class="btn btn-default" type="submit" name="upvote" value="Up vote"><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></button>
+    <button class="btn btn-default" type="submit" name="downvote" value="Down vote"><i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i></button>
     {% elif already_upvoted %}
     <p>You already upvoted. Change your vote?</p>
     <button class="btn btn-default" type="submit" name="upvote" disabled><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></button>
