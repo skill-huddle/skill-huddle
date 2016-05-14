@@ -6,8 +6,8 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm
-from sh_app.models import League, Suggestion
+from sh_app.forms import UserForm, SH_UserForm, LeagueForm, SuggestionForm, HuddleForm
+from sh_app.models import League, Suggestion, SH_User, Huddle
 
 
 def index(request):
@@ -122,6 +122,13 @@ def user_login(request):
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
 
+@login_required
+def profile(request, sh_user_id):
+    sh_user = get_object_or_404(SH_User, pk=sh_user_id)
+    official_list = sh_user.Official_of.all()
+    member_list = set(sh_user.LM_of.all()) - set(official_list)
+
+    return render(request, 'profile.html', {'sh_user': sh_user, 'member_list': member_list, 'official_list': official_list})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required
@@ -195,7 +202,28 @@ def create_suggestion(request, league_id):
 @login_required
 def suggestion_detail(request, suggestion_id):
     suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
-    return render(request, 'suggestion_detail.html', {'suggestion': suggestion})
+    sh_user = request.user.sh_user
+    if not suggestion.league.is_member(sh_user):
+        return HttpResponse("You must be a league member of league {} to view this page".format(suggestion.league.name))
+
+    if request.method == 'POST':
+        for key in request.POST.keys():
+            if "upvote" in key:
+                suggestion.downvotes.remove(sh_user)
+                suggestion.upvotes.add(sh_user)
+                suggestion.save()
+            elif "downvote" in key:
+                suggestion.upvotes.remove(sh_user)
+                suggestion.downvotes.add(sh_user)
+                suggestion.save()
+
+    context = {
+        'suggestion': suggestion,
+        'already_voted': suggestion.is_voted_on_by(sh_user),
+        'already_upvoted': suggestion.is_upvoted_by(sh_user),
+    }
+
+    return render(request, 'suggestion_detail.html', context)
 
 def leagues(request):
     list_of_leagues = League.objects.all()
@@ -203,4 +231,112 @@ def leagues(request):
 
 def league_detail(request, league_id):
     league = get_object_or_404(League, pk=league_id)
-    return render(request, 'league_detail.html', {'league': league})
+
+    if request.user.is_authenticated():
+        sh_user = request.user.sh_user
+        if request.method == "POST":
+            # Clicked join league
+            league.members.add(sh_user)
+            league.save()
+            is_member = True
+            is_head_official = False
+            is_official = False
+        else:
+            # Get request
+            is_head_official = league.is_head_official(sh_user)
+            is_official = league.is_official(sh_user)
+            is_member = league.is_member(sh_user)
+        return render(request, 'league_detail.html',
+                      {'league': league,
+                       'is_head_official': is_head_official,
+                       'is_official': is_official,
+                       'is_member': is_member})
+    else:
+        # User not logged in
+        return render(request, 'league_detail.html',
+                      {'league': league,
+                       'is_head_official': False,
+                       'is_official': False,
+                       'is_member': False})
+
+@login_required
+def manage_league_membership(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    sh_user = request.user.sh_user
+
+    if league.is_head_official(sh_user):
+        if request.method == "POST":
+            # Promoted or demoted the sh_user
+            for key, value in request.POST.items():
+                if "demote" in key:
+                    target_user = key.split('_')[1]
+                    league.officials.remove(target_user)
+                    league.save()
+                elif "promote" in key:
+                    target_user = key.split('_')[1]
+                    league.officials.add(target_user)
+                    league.save()
+
+        list_of_officials = set(league.officials.all()) - set([sh_user])
+        list_of_members = set(league.members.all()) - list_of_officials - set([sh_user])
+        return render(request, 'manage_league_membership.html',
+                      {'league': league,
+                       'list_of_members': list_of_members,
+                       'list_of_officials': list_of_officials,
+                       'head_official': sh_user})
+    else:
+        # User is not a head official
+        return HttpResponse("You must be a head official of league {} to view this page".format(league.name))
+
+@login_required
+def manage_league_suggestions(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+
+    # Redirect if not official
+    if not league.is_official(request.user.sh_user):
+        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+
+    # Update all suggestion approval statuses for the league
+    suggestions_vote_ended_not_approved = league.suggestions.filter(voting_ends__lte=timezone.now()).filter(is_accepted=False)
+    for suggestion in suggestions_vote_ended_not_approved:
+        if suggestion.tally_votes() > 3:
+            suggestion.is_accepted = True
+            suggestion.save()
+
+    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_achieved=False)
+    return render(request, 'manage_league_suggestions.html',
+                  {'league': league,
+                   'list_of_approved_suggestions': list_approved_suggestions})
+
+@login_required
+def create_huddle(request, suggestion_id):
+    suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
+
+    # Redirect if not official
+    if not suggestion.league.is_official(request.user.sh_user):
+        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+
+    if request.method == 'POST':
+        huddle_form = HuddleForm(data=request.POST)
+        if huddle_form.is_valid():
+            huddle = huddle_form.save(commit=False)
+            huddle.league = suggestion.league
+            huddle.save()
+            huddle.experts.add(request.user.sh_user)
+            huddle.attendants.add(request.user.sh_user)
+            huddle.save()
+            suggestion.is_achieved = True
+            suggestion.save()
+
+            return HttpResponseRedirect(reverse('league_detail', args=[suggestion.league.id]))
+    else:
+        huddle = Huddle()
+        huddle.name = suggestion.name
+        huddle.description = suggestion.description
+        huddle.league = suggestion.league
+        huddle_form = HuddleForm(instance=huddle)
+
+    return render(
+        request,
+        'create_huddle.html',
+        {'huddle_form': huddle_form, 'suggestion_id': suggestion_id})

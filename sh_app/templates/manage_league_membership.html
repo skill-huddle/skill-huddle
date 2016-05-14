@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% comment %}
+Template variables passed:
+league: League object for league associated with this page
+list_of_members: list of SH_Users in this league
+list_of_officials: list of SH_Users who are officials in this league
+head_official: HO of the league
+{% endcomment %}
+
+{% block title %} Manage {{ league }} Members {% endblock %}
+
+{% block content %}
+<h1>Officials</h1>
+<ul>
+    {% for sh_user in list_of_officials %}
+    <li> {{ sh_user }}
+        <form id="demote_form" method="POST" action="{% url "manage_league_membership" league.id %}">
+        {% csrf_token %}
+        <input type="submit" name="demote_{{ sh_user.id }}" value="Demote"/>
+        </form>
+    </li>
+    {% empty %}
+    <li>{{ league }} has no officials</li>
+    {% endfor %}
+</ul>
+<h1>Members</h1>
+<ul>
+    {% for sh_user in list_of_members %}
+    <li> {{ sh_user }}
+        <form id="promote_form" method="POST" action="{% url "manage_league_membership" league.id %}">
+        {% csrf_token %}
+        <input type="submit" name="promote_{{ sh_user.id }}" value="Promote"/>
+        </form>
+    </li>
+    {% empty %}
+    <li>{{ league }} has no members</li>
+    {% endfor %}
+</ul>
+{% endblock %}

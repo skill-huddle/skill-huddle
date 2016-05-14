@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'sh_app.apps.ShAppConfig',
     'django_countries',
     'localflavor',
+    'bootstrap3',
 )
 
 # https://github.com/SmileyChris/django-countries
