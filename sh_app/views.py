@@ -299,7 +299,7 @@ def manage_league_suggestions(request, league_id):
     # Update all suggestion approval statuses for the league
     suggestions_vote_ended_not_approved = league.suggestions.filter(voting_ends__lte=timezone.now()).filter(is_accepted=False)
     for suggestion in suggestions_vote_ended_not_approved:
-        if suggestion.tally_votes() > 5:
+        if suggestion.tally_votes() > 3:
             suggestion.is_accepted = True
             suggestion.save()
 
