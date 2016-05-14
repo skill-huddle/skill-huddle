@@ -16,11 +16,9 @@ list_of_approved_suggestions: list of Suggestions that are approved and awaiting
 <ul class="list-group">
     {% for suggestion in list_of_approved_suggestions %}
     <li class="list-group-item">
-      <h4>{{ suggestion }}</h4>
-      <p>
-        <a class="btn btn-default" href="{% url 'suggestion_detail' suggestion.id %}">View details</a>
-        <a class="btn btn-primary" href="{% url 'create_huddle' suggestion.id %}">Turn into a Huddle</a>
-      </p>
+      <h4 class="list-group-item-heading">{{ suggestion }}</h4>
+      <a class="btn btn-default btn-sm" href="{% url 'suggestion_detail' suggestion.id %}">View details</a>
+      <a class="btn btn-primary btn-sm" href="{% url 'create_huddle' suggestion.id %}">Turn into a Huddle</a>
     </li>
     {% endfor %}
 </ul>

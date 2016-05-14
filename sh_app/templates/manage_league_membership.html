@@ -21,7 +21,7 @@ head_official: HO of the league
         <form method="POST" action="{% url 'manage_league_membership' league.id %}">
             {% csrf_token %}
             <span>{{ sh_user }}</span>
-            <button class="btn btn-default" type="submit" name="demote_{{ sh_user.id }}">
+            <button class="btn btn-default btn-sm" type="submit" name="demote_{{ sh_user.id }}">
                 <i class="fa fa-arrow-down" aria-hidden="true"></i> Demote
             </button>
         </form>
@@ -40,7 +40,7 @@ head_official: HO of the league
         <form method="POST" action="{% url 'manage_league_membership' league.id %}">
             {% csrf_token %}
             <span>{{ sh_user }}</span>
-            <button class="btn btn-default" type="submit" name="promote_{{ sh_user.id }}">
+            <button class="btn btn-default btn-sm" type="submit" name="promote_{{ sh_user.id }}">
                 <i class="fa fa-arrow-up" aria-hidden="true"></i> Promote
             </button>
         </form>
