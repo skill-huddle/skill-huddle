@@ -5,15 +5,19 @@ Template variables passed:
 league: League object for league associated with this page
 {% endcomment %}
 
+{% load bootstrap3 %}
+
 {% block title %}All Leagues{% endblock %}
 
 {% block content %}
 <h1>Leagues</h1>
-<ul>
+{% if list_of_leagues %}
+<div class="list-group">
     {% for league in list_of_leagues %}
-    <li><a href="{% url 'league_detail' league.id %}">{{ league }}</a></li>
-    {% empty %}
-    <li>No leagues exist. Would you like to <a href="{% url 'create_league' %}">create one?</a></li>
+    <a class="list-group-item" href="{% url 'league_detail' league.id %}">{{ league }}</a>
     {% endfor %}
-</ul>
+</div>
+{% else %}
+<p>No leagues exist. Would you like to <a href="{% url 'create_league' %}">create one?</a></p>
+{% endif %}
 {% endblock %}
