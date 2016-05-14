@@ -1,6 +1,6 @@
 import os,sys,django
 
-sys.path.append(os.getcwd() + '\\skill_huddle')
+sys.path.append(os.path.dirname(os.path.abspath('.')))
 os.environ["DJANGO_SETTINGS_MODULE"] = 'skill_huddle.settings'
 django.setup()
 
@@ -222,11 +222,14 @@ def createHuddles():
 			desc_start  =  random.randint(0,82824 - 300)
 			description =  string_book[desc_start : desc_start + 160]
 
+			date        =  timezone.now() + timezone.timedelta(days=random.randint(-20,20))
+
 			new_huddle             = Huddle()
 			new_huddle.name        = name
 			new_huddle.address     = address
 			new_huddle.description = description
 			new_huddle.league      = league
+			new_huddle.date        = date
 			list_officials = list(league.officials.all())
 
 			try:
