@@ -6,15 +6,25 @@ league: League object for league associated with this page
 list_of_approved_suggestions: list of Suggestions that are approved and awaiting huddle pages
 {% endcomment %}
 
+{% load bootstrap3 %}
+
 {% block title %} Manage {{ league }} Suggestions {% endblock %}
 
 {% block content %}
-<h1>Approved Suggestions</h1>
-<ul>
+<h1>Approved suggestions awaiting Huddle creation</h1>
+{% if list_of_approved_suggestions %}
+<ul class="list-group">
     {% for suggestion in list_of_approved_suggestions %}
-    <li><a href="{% url 'create_huddle' suggestion.id %}">{{ suggestion }}</a></li>
-    {% empty %}
-    <p>No approved suggestions in league {{ league }}</p>
+    <li class="list-group-item">
+      <h4>{{ suggestion }}</h4>
+      <p>
+        <a class="btn btn-default" href="{% url 'suggestion_detail' suggestion.id %}">View details</a>
+        <a class="btn btn-primary" href="{% url 'create_huddle' suggestion.id %}">Turn into a Huddle</a>
+      </p>
+    </li>
     {% endfor %}
 </ul>
+{% else %}
+<p>No suggestions are awaiting Huddle creation in league {{ league }}</p>
+{% endif %}
 {% endblock %}
