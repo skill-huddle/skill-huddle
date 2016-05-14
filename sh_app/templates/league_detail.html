@@ -13,7 +13,10 @@ is_member: Bool indicating whether user is a member of this league
 {% block content %}
 <h1> {{ league }}</h1>
 {% if is_head_official %}
-<p><a href="{% url 'manage_league' league.id %}">Manage League</a></p>
+<p><a href="{% url 'manage_league_membership' league.id %}">Manage League Membership</a></p>
+{% endif %}
+{% if is_official %}
+<p><a href="{% url 'manage_league_suggestions' league.id %}">Manage League Suggestions</a></p>
 {% endif %}
 <p>{{ league.description }}</p>
 <p>Country: {{ league.get_country_display }}</p>

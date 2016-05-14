@@ -2,7 +2,7 @@
 {% comment %}
 Template variables passed:
 sh_user - an SH_User object
-lm_list - list of leagues where sh_user is a member
+member_list - list of leagues where sh_user is a member
 official_list - list of leagues where sh_user is an official
 {% endcomment %}
 
@@ -17,7 +17,7 @@ official_list - list of leagues where sh_user is an official
 
     <h1>  Member of </h1>
     <ul>
-    {% for league in lm_list %}
+    {% for league in member_list %}
         <li><a href="{% url 'league_detail' league.id %}"> {{ league }} </a> </li>
     {% empty %}
         <p> {{ sh_user }} is not part of any leagues </p>
