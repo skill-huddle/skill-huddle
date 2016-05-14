@@ -8,14 +8,14 @@ list_of_officials: list of SH_Users who are officials in this league
 head_official: HO of the league
 {% endcomment %}
 
-{% block title %} Manage {{ league }} {% endblock %}
+{% block title %} Manage {{ league }} Members {% endblock %}
 
 {% block content %}
 <h1>Officials</h1>
 <ul>
     {% for sh_user in list_of_officials %}
     <li> {{ sh_user }}
-        <form id="demote_form" method="POST" action="{% url "manage_league" league.id %}">
+        <form id="demote_form" method="POST" action="{% url "manage_league_membership" league.id %}">
         {% csrf_token %}
         <input type="submit" name="demote_{{ sh_user.id }}" value="Demote"/>
         </form>
@@ -28,7 +28,7 @@ head_official: HO of the league
 <ul>
     {% for sh_user in list_of_members %}
     <li> {{ sh_user }}
-        <form id="promote_form" method="POST" action="{% url "manage_league" league.id %}">
+        <form id="promote_form" method="POST" action="{% url "manage_league_membership" league.id %}">
         {% csrf_token %}
         <input type="submit" name="promote_{{ sh_user.id }}" value="Promote"/>
         </form>

@@ -125,11 +125,10 @@ def restricted(request):
 @login_required
 def profile(request, sh_user_id):
     sh_user = get_object_or_404(SH_User, pk=sh_user_id)
-    mem_list = sh_user.LM_of.all()
-    off_list = sh_user.Official_of.all()
-    lm_list = set(mem_list) - set(off_list)
-    official_list = off_list
-    return render(request, 'profile.html', {'sh_user': sh_user, 'lm_list': lm_list, 'official_list': official_list})
+    official_list = sh_user.Official_of.all()
+    member_list = set(sh_user.LM_of.all()) - set(official_list)
+
+    return render(request, 'profile.html', {'sh_user': sh_user, 'member_list': member_list, 'official_list': official_list})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required
@@ -261,7 +260,7 @@ def league_detail(request, league_id):
                        'is_member': False})
 
 @login_required
-def manage_league(request, league_id):
+def manage_league_membership(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     sh_user = request.user.sh_user
 
@@ -280,7 +279,7 @@ def manage_league(request, league_id):
 
         list_of_officials = set(league.officials.all()) - set([sh_user])
         list_of_members = set(league.members.all()) - list_of_officials - set([sh_user])
-        return render(request, 'manage_league.html',
+        return render(request, 'manage_league_membership.html',
                       {'league': league,
                        'list_of_members': list_of_members,
                        'list_of_officials': list_of_officials,
@@ -288,3 +287,23 @@ def manage_league(request, league_id):
     else:
         # User is not a head official
         return HttpResponse("You must be a head official of league {} to view this page".format(league.name))
+
+@login_required
+def manage_league_suggestions(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+
+    # Redirect if not official
+    if not league.is_official(request.user.sh_user):
+        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+
+    # Update all suggestion approval statuses for the league
+    suggestions_vote_ended_not_approved = league.suggestions.filter(voting_ends__lte=timezone.now()).filter(is_accepted=False)
+    for suggestion in suggestions_vote_ended_not_approved:
+        if suggestion.tally_votes() > 3:
+            suggestion.is_accepted = True
+            suggestion.save()
+
+    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_achieved=False)
+    return render(request, 'manage_league_suggestions.html',
+                  {'league': league,
+                   'list_of_approved_suggestions': list_approved_suggestions})
