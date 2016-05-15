@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^leagues/(?P<league_id>[0-9]+)/manage_league_membership/$', views.manage_league_membership, name='manage_league_membership'),
     url(r'^leagues/(?P<league_id>[0-9]+)/manage_league_suggestions/$', views.manage_league_suggestions, name='manage_league_suggestions'),
     url(r'^suggestion/(?P<suggestion_id>[0-9]+)/$', views.suggestion_detail, name='suggestion_detail'),
+    url(r'^suggestion/(?P<suggestion_id>[0-9]+)/create_huddle/$', views.create_huddle, name='create_huddle'),
 ]

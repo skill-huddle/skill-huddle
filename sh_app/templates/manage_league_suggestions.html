@@ -12,7 +12,7 @@ list_of_approved_suggestions: list of Suggestions that are approved and awaiting
 <h1>Approved Suggestions</h1>
 <ul>
     {% for suggestion in list_of_approved_suggestions %}
-    <li><a href="">{{ suggestion }}</a></li>
+    <li><a href="{% url 'create_huddle' suggestion.id %}">{{ suggestion }}</a></li>
     {% empty %}
     <p>No approved suggestions in league {{ league }}</p>
     {% endfor %}
