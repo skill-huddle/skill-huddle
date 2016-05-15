@@ -9,7 +9,7 @@
     {% for huddle in user.sh_user.attending.all %}
     <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
         <span class="list-group-item-heading">{{ huddle}}</span> -
-        <span class="list-group-item-text">on {{ huddle.date }}</span>
+        <span class="list-group-item-text">{{huddle.league}} - on {{ huddle.date }}</span>
     </a>
     {% endfor %}
 </div>
