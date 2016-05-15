@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% comment %}
+Template variables passed:
+huddle: Huddle object for huddle associated with this page
+already_attending: Bool indicating whether user is already attending huddle
+{% endcomment %}
+
+{% load bootstrap3 %}
+
+{% block title %}Huddle Detail{% endblock %}
+
+{% block content %}
+<h1>{{ huddle }} Huddle</h1>
+<p> League: {{ huddle.league }} </p>
+<p>Address: {{ huddle.address }}</p>
+<p>Date: {{ huddle.date }}</p>
+<p>Description: {{ huddle.description }}</p>
+
+<hr/>
+
+<form action="{% url 'huddle_detail' huddle.id %}" method="post">
+    {% csrf_token %}
+    {% if not already_attending %}
+    <p>Are you attending the huddle? </p>
+    <button class="btn btn-primary" type="submit" name="attending">Attend</button>
+    {% else %}
+    <p>You are attending the huddle! Change of plans?</p>
+    <button class="btn btn-primary" type="submit" name="notattending">Can't Attend</button>
+    {% endif %}
+</form>
+
+<h3> List of Experts Attending </h3>
+{% if huddle.experts.all %}
+<div class="list-group">
+    {% for expert in huddle.experts.all %}
+    <a class="list-group-item" href="{% url 'profile' expert.id %}">
+      <span class="list-group-item-text">{{ expert }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>No experts attending this huddle :(.</p>
+{% endif %}
+
+
+
+<h3> People Attending </h3>
+{% if huddle.attendants.all %}
+<div class="list-group">
+    {% for attendant in huddle.attendants.all %}
+    <a class="list-group-item" href="{% url 'profile' attendant.id %}">
+      <span class="list-group-item-text">{{ attendant }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>No attendants in this huddle. Be the first to sign up!</p>
+{% endif %}
+
+{% endblock %}
