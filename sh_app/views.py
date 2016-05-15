@@ -292,7 +292,7 @@ def manage_league_suggestions(request, league_id):
             suggestion.is_accepted = True
             suggestion.save()
 
-    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_achieved=False)
+    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_archived=False)
     return render(request, 'manage_league_suggestions.html',
                   {'league': league,
                    'list_of_approved_suggestions': list_approved_suggestions})
@@ -314,7 +314,7 @@ def create_huddle(request, suggestion_id):
             huddle.experts.add(request.user.sh_user)
             huddle.attendants.add(request.user.sh_user)
             huddle.save()
-            suggestion.is_achieved = True
+            suggestion.is_archived = True
             suggestion.save()
 
             return HttpResponseRedirect(reverse('league_detail', args=[suggestion.league.id]))
