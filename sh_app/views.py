@@ -16,13 +16,6 @@ def index(request):
     """
     return render(request, "index.html")
 
-
-def about(request):
-    """
-    Serve view for about page
-    """
-    return render(request, "about.html")
-
 def register(request):
 
     # A boolean value for telling the template whether the registration was successful.
@@ -117,10 +110,6 @@ def user_login(request):
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
         return render(request, 'login.html', {})
-
-@login_required
-def restricted(request):
-    return HttpResponse("Since you're logged in, you can see this text!")
 
 @login_required
 def profile(request, sh_user_id):
@@ -303,7 +292,7 @@ def manage_league_suggestions(request, league_id):
             suggestion.is_accepted = True
             suggestion.save()
 
-    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_achieved=False)
+    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_archived=False)
     return render(request, 'manage_league_suggestions.html',
                   {'league': league,
                    'list_of_approved_suggestions': list_approved_suggestions})
@@ -325,7 +314,7 @@ def create_huddle(request, suggestion_id):
             huddle.experts.add(request.user.sh_user)
             huddle.attendants.add(request.user.sh_user)
             huddle.save()
-            suggestion.is_achieved = True
+            suggestion.is_archived = True
             suggestion.save()
 
             return HttpResponseRedirect(reverse('league_detail', args=[suggestion.league.id]))
