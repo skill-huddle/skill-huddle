@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 
+{% load bootstrap3 %}
+
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h1>Login to SH</h1>
-<form id="login_form" method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    Username: <input type="text" name="username" value="" size="50" />
-    <br />
-    Password: <input type="password" name="password" value="" size="50" />
-    <br />
-    <input type="submit" value="submit" />
-</form>
+<div class="form-wrapper">
+  <h1>Please login</h1>
+  <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <input class="form-control" type="text" name="username" placeholder="Username" required autofocus/>
+      <input class="form-control" type="password" name="password" placeholder="Password" required/>
+      <button class="form-submit btn btn-lg btn-primary btn-block" type="submit">Login</button>
+  </form>
+</div>
 {% endblock %}
