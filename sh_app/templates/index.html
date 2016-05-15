@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if user.is_authenticated %}
+<h1>Hello {{ user.username }}!</h1>
+{% else %}
 <h1> Welcome to Skill Huddle</h1>
 <h3>
 Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.
 </h3>
-{% if user.is_authenticated %}
-<h1>Hello {{ user.username }}!</h1>
-{% else %}
 <h3><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}">Register!</a></h3>
 
 <hr/>
