@@ -40,7 +40,7 @@ is_member: Bool indicating whether user is a member of this league
 {% if league.huddles.all %}
 <div class="list-group">
     {% for huddle in league.huddles.all %}
-    <a class="list-group-item" href="">
+    <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
       <span class="list-group-item-heading">{{ huddle}}</span> -
       <span class="list-group-item-text">on {{ huddle.date }}</span>
     </a>
