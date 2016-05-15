@@ -8,8 +8,8 @@
 <div class="list-group">
     {% for huddle in user.sh_user.attending.all %}
     <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
-      <span class="list-group-item-heading">{{ huddle}}</span> -
-      <span class="list-group-item-text">on {{ huddle.date }}</span>
+        <span class="list-group-item-heading">{{ huddle}}</span> -
+        <span class="list-group-item-text">on {{ huddle.date }}</span>
     </a>
     {% endfor %}
 </div>
@@ -17,11 +17,24 @@
 <p>You are not attending any huddles!</p>
 {% endif %}
 
+<h3>Your Suggestions</h3>
+{% if user.sh_user.suggestions.all %}
+<div class="list-group">
+    {% for suggestion in user.sh_user.suggestions.all %}
+    <a class="list-group-item" href="{% url 'suggestion_detail' suggestion.id %}">
+        <span class="list-group-item-heading">{{ suggestion}}</span> -
+        <span class="list-group-item-text"> {{suggestion.league}} - ends {{ suggestion.voting_ends }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>You did not make any suggestions to any leagues!</p>
+{% endif %}
 
 {% else %}
 <h1> Welcome to Skill Huddle</h1>
 <h3>
-Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.
+    Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.
 </h3>
 <h3><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}">Register!</a></h3>
 
