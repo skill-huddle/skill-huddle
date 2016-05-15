@@ -7,7 +7,6 @@ urlpatterns = [
     url(r'^register/$', views.register, name='register'),
     url(r'^login/$', views.user_login, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
-    url(r'^restricted/$', views.restricted, name='restricted'),
     url(r'^profile/(?P<sh_user_id>[0-9]+)/$', views.profile, name='profile'),
     url(r'^leagues/$', views.leagues, name='leagues'),
     url(r'^leagues/create/$', views.create_league, name='create_league'),

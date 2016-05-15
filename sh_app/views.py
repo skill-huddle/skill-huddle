@@ -112,10 +112,6 @@ def user_login(request):
         return render(request, 'login.html', {})
 
 @login_required
-def restricted(request):
-    return HttpResponse("Since you're logged in, you can see this text!")
-
-@login_required
 def profile(request, sh_user_id):
     sh_user = get_object_or_404(SH_User, pk=sh_user_id)
     official_list = sh_user.Official_of.all()
