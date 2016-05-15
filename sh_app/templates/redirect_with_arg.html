@@ -1,0 +1,16 @@
+<!--
+Template variables:
+title: browser tab title
+content: message to be displayed
+heading: content for heading tag
+url_arg: argument for url template tag
+url_arg_id: argument for id in url template tag
+url_text: text to show for tag
+-->
+{% extends 'base.html' %}
+{% block title %} {{ title }} {% endblock %}
+{% block content %}
+<h2>{{ heading }}</h2>
+<p>{{ content }}</p>
+<a href="{% url url_arg url_arg_id %}">{{ url_text }}</a>
+{% endblock %}
