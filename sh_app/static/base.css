@@ -1,0 +1,13 @@
+.form-wrapper {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.form-control {
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  margin-top: 2px;
+}
+.form-submit {
+  margin-top: 10px;
+}
