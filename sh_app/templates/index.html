@@ -3,6 +3,21 @@
 {% block content %}
 {% if user.is_authenticated %}
 <h1>Hello {{ user.username }}!</h1>
+<h3>Your Upcoming Huddles</h3>
+{% if user.sh_user.attending.all %}
+<div class="list-group">
+    {% for huddle in user.sh_user.attending.all %}
+    <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
+      <span class="list-group-item-heading">{{ huddle}}</span> -
+      <span class="list-group-item-text">on {{ huddle.date }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>You are not attending any huddles!</p>
+{% endif %}
+
+
 {% else %}
 <h1> Welcome to Skill Huddle</h1>
 <h3>
