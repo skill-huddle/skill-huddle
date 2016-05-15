@@ -340,3 +340,27 @@ def create_huddle(request, suggestion_id):
         request,
         'create_huddle.html',
         {'huddle_form': huddle_form, 'suggestion_id': suggestion_id})
+
+@login_required
+def huddle_detail(request, huddle_id):
+    huddle = get_object_or_404(Huddle, pk=huddle_id)
+    sh_user = request.user.sh_user
+    if not huddle.league.is_member(sh_user):
+        return HttpResponse("You must be a league member of league {} to view this page".format(huddle.league.name))
+
+    if request.method == "POST":
+        # Promoted or demoted the sh_user
+        for key in request.POST.keys():
+            if "notattending" in key:
+                huddle.attendants.remove(sh_user)
+            elif "attending" in key:
+                huddle.attendants.add(sh_user)
+
+    context = {
+        'huddle': huddle,
+        'already_attending': huddle.is_attending(sh_user),
+    }
+
+    return render(request, 'huddle_detail.html', context)
+
+
