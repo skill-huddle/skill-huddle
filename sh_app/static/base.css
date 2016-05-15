@@ -1,5 +1,5 @@
-#login-form {
-  max-width: 380px;
+.form-wrapper {
+  max-width: 400px;
   margin: 0 auto;
 }
 .form-field {
