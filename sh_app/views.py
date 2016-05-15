@@ -198,7 +198,7 @@ def create_suggestion(request, league_id):
         return render(request, 'redirect_with_arg.html', {
             'title': 'Restricted',
             'heading': 'Page Unavailable',
-            'content': 'You must be a league member of league {} to create a suggestion'.format(league.name),
+            'content': 'You must be a member of {} to create a suggestion'.format(league.name),
             'url_arg': 'league_detail',
             'url_arg_id': league_id,
             'url_text': 'Back to {}'.format(league)
@@ -214,7 +214,7 @@ def suggestion_detail(request, suggestion_id):
         return render(request, 'redirect_with_arg.html', {
             'title': 'Restricted',
             'heading': 'Page Unavailable',
-            'content': 'You must be a league member of league {} to view suggestion details'.format(suggestion.league.name),
+            'content': 'You must be a member of {} to view suggestion details'.format(suggestion.league.name),
             'url_arg': 'league_detail',
             'url_arg_id': suggestion.league.id,
             'url_text': 'Back to {}'.format(suggestion.league)
@@ -311,7 +311,7 @@ def manage_league_membership(request, league_id):
         return render(request, 'redirect_with_arg.html', {
             'title': 'Restricted',
             'heading': 'Page Unavailable',
-            'content': 'You must be a head official of league {} to manage league members'.format(league.name),
+            'content': 'You must be a head official of {} to manage league members'.format(league.name),
             'url_arg': 'league_detail',
             'url_arg_id': league_id,
             'url_text': 'Back to {}'.format(league)
@@ -326,7 +326,7 @@ def manage_league_suggestions(request, league_id):
         return render(request, 'redirect_with_arg.html', {
             'title': 'Restricted',
             'heading': 'Page Unavailable',
-            'content': 'You must be an official of league {} to manage league suggestions'.format(league.name),
+            'content': 'You must be an official of {} to manage league suggestions'.format(league.name),
             'url_arg': 'league_detail',
             'url_arg_id': league.id,
             'url_text': 'Back to {}'.format(league)
@@ -353,7 +353,7 @@ def create_huddle(request, suggestion_id):
         return render(request, 'redirect_with_arg.html', {
             'title': 'Restricted',
             'heading': 'Page Unavailable',
-            'content': 'You must be an official of league {} to create a huddle'.format(suggestion.league.name),
+            'content': 'You must be an official of {} to create a huddle'.format(suggestion.league.name),
             'url_arg': 'league_detail',
             'url_arg_id': suggestion.league.id,
             'url_text': 'Back to {}'.format(suggestion.league)
@@ -392,7 +392,7 @@ def huddle_detail(request, huddle_id):
         return render(request, 'redirect_with_arg.html', {
             'title': 'Restricted',
             'heading': 'Page Unavailable',
-            'content': 'You must be a league member of league {} to view huddle details'.format(huddle.league.name),
+            'content': 'You must be a member of {} to view huddle details'.format(huddle.league.name),
             'url_arg': 'league_detail',
             'url_arg_id': huddle.league.id,
             'url_text': 'Back to {}'.format(huddle.league)
