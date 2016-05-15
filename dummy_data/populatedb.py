@@ -143,7 +143,7 @@ def createSuggestions():
             " " + list_nouns[random.randint(0,len(list_nouns)-1)].strip('\n') +\
             " " + list_nouns[random.randint(0,len(list_nouns)-1)] + " suggestion"
             desc_start = random.randint(0,82824 - 300)
-            description = string_book[desc_start : desc_start + 200]
+            description = string_book[desc_start: desc_start + 200]
 
             new_suggestion               = Suggestion()
             new_suggestion.name          = name.capitalize()
@@ -224,7 +224,7 @@ def createHuddles():
 
     for league in League.objects.all():
         for i in range(0,10):
-            name = list_adjs[random.randint(1,len(list_adjs))-1].strip('\n') + " " + list_nouns[random.randint(1,len(list_nouns))-1].strip('\n') + "s" + " huddle"
+            name = list_adjs[random.randint(1,len(list_adjs))-1].strip('\n') + " " + list_nouns[random.randint(1,len(list_nouns))-1].strip('\n') + " huddle"
             address = str(random.randint(1,1000)) +\
                       " " + list_nouns[random.randint(1,len(list_nouns))-1].strip('\n') +\
                       " " + list_roadtype[random.randint(1,len(list_roadtype))-1]
