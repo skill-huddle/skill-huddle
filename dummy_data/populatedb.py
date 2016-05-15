@@ -65,7 +65,7 @@ def createLeagues():
         with open('adjectives.txt','r') as adjs,open('nouns.txt','r') as nouns:
             list_adjs = adjs.readlines()
             list_nouns = nouns.readlines()
-            name = "The %s %ss" % (list_adjs[random.randint(0,len(list_adjs)-1)].replace('\n',''), list_nouns[random.randint(0,len(list_nouns))].replace('\n',''))
+            name = "%s %s league" % (list_adjs[random.randint(0,len(list_adjs)-1)].replace('\n',''), list_nouns[random.randint(0,len(list_nouns))].replace('\n',''))
             desc_start = random.randint(0,82824 - 300)
             description = string_book[desc_start : desc_start + 160]
             country = list_countries[random.randint(0,len(list_countries) -1)]
@@ -74,7 +74,7 @@ def createLeagues():
             city = list_nouns[random.randint(0,len(list_nouns))].replace('\n','')
 
             new_league.city = city
-            new_league.name = name
+            new_league.name = name.capitalize()
             new_league.decription = description
             new_league.country = country
 
@@ -141,12 +141,12 @@ def createSuggestions():
             rand_user = league.members.all()[random.randint(0,tot_members -1)]
             name = list_adjs[random.randint(0,len(list_adjs)-1)].strip('\n') +\
             " " + list_nouns[random.randint(0,len(list_nouns)-1)].strip('\n') +\
-            " " + list_nouns[random.randint(0,len(list_nouns)-1)]
+            " " + list_nouns[random.randint(0,len(list_nouns)-1)] + " suggestion"
             desc_start = random.randint(0,82824 - 300)
-            description = string_book[desc_start : desc_start + 200]
+            description = string_book[desc_start: desc_start + 200]
 
             new_suggestion               = Suggestion()
-            new_suggestion.name          = name
+            new_suggestion.name          = name.capitalize()
             new_suggestion.suggested_by  = rand_user
             new_suggestion.description   = description
             new_suggestion.voting_starts = timezone.now() -\
@@ -224,7 +224,7 @@ def createHuddles():
 
     for league in League.objects.all():
         for i in range(0,10):
-            name = list_adjs[random.randint(1,len(list_adjs))-1].strip('\n') + list_nouns[random.randint(1,len(list_nouns))-1].strip('\n') + "s"
+            name = list_adjs[random.randint(1,len(list_adjs))-1].strip('\n') + " " + list_nouns[random.randint(1,len(list_nouns))-1].strip('\n') + " huddle"
             address = str(random.randint(1,1000)) +\
                       " " + list_nouns[random.randint(1,len(list_nouns))-1].strip('\n') +\
                       " " + list_roadtype[random.randint(1,len(list_roadtype))-1]
@@ -234,7 +234,7 @@ def createHuddles():
             date        =  timezone.now() + timezone.timedelta(days=random.randint(-20,20))
 
             new_huddle             = Huddle()
-            new_huddle.name        = name
+            new_huddle.name        = name.capitalize()
             new_huddle.address     = address
             new_huddle.description = description
             new_huddle.league      = league
