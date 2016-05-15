@@ -21,11 +21,15 @@ is_member: Bool indicating whether user is a member of this league
   {% endif %}
   <a class="btn btn-default" href="{% url 'manage_league_suggestions' league.id %}">Manage League Suggestions</a>
   {% elif is_member %}
-  <button class="btn btn-primary" name="submit">Leave league</button>
+  <form id="leave_league_form" method="post" action="{% url "league_detail" league.id %}">
+      {% csrf_token %}
+      <button class="btn btn-primary" type="submit" name="leave">Leave league</button>
+  </form>
+
   {% else %}
   <form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
       {% csrf_token %}
-      <button class="btn btn-primary" type="submit" name="submit">Join league</button>
+      <button class="btn btn-primary" type="submit" name="join">Join league</button>
   </form>
 {% endif %}
 </p>

@@ -249,12 +249,20 @@ def league_detail(request, league_id):
     if request.user.is_authenticated():
         sh_user = request.user.sh_user
         if request.method == "POST":
-            # Clicked join league
-            league.members.add(sh_user)
-            league.save()
-            is_member = True
-            is_head_official = False
-            is_official = False
+            # Clicked join or leave league
+            if "join" in request.POST.keys():
+                league.members.add(sh_user)
+                league.save()
+                is_member = True
+                is_head_official = False
+                is_official = False
+            else:
+                # Clicked leave
+                league.members.remove(sh_user)
+                league.save()
+                is_member = False
+                is_head_official = False
+                is_official = False
         else:
             # Get request
             is_head_official = league.is_head_official(sh_user)
