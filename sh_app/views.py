@@ -16,13 +16,6 @@ def index(request):
     """
     return render(request, "index.html")
 
-
-def about(request):
-    """
-    Serve view for about page
-    """
-    return render(request, "about.html")
-
 def register(request):
 
     # A boolean value for telling the template whether the registration was successful.
