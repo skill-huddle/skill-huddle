@@ -1,0 +1,11 @@
+#login-form {
+  max-width: 380px;
+  margin: 0 auto;
+}
+.form-field {
+  width: 100%;
+  padding: 10px;
+}
+.form-submit {
+  margin-top: 10px;
+}
