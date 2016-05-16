@@ -417,9 +417,8 @@ def huddle_detail(request, huddle_id):
                 huddle.save()
 
     huddle_attendants = huddle.attendants.all()
-    huddle_experts = huddle.experts.all()
-    list_of_attendants = set(huddle_attendants) - set(huddle_experts)
-    not_attending = sh_user not in huddle_attendants and sh_user not in huddle_experts
+    list_of_attendants = set(huddle_attendants) - set(huddle.experts.all())
+    not_attending = sh_user not in huddle_attendants
     context = {
         'huddle': huddle,
         'not_attending': not_attending,
