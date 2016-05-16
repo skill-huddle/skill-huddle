@@ -252,27 +252,31 @@ def league_detail(request, league_id):
             # Clicked join or leave league
             if "join" in request.POST.keys():
                 league.members.add(sh_user)
-                league.save()
-                is_member = True
-                is_head_official = False
-                is_official = False
             else:
                 # Clicked leave
+                for suggestion in league.suggestions.all():
+                    if suggestion.is_suggested_by(sh_user):
+                        suggestion.delete()
                 league.members.remove(sh_user)
-                league.save()
-                is_member = False
-                is_head_official = False
-                is_official = False
+                if league.is_official(sh_user):
+                    league.officials.remove(sh_user)
+                if league.is_head_official(sh_user):
+                    league.delete()
+                    return HttpResponseRedirect(reverse('index'))
+
+            league.save()
+            return render(request, 'league_detail.html',
+                          {'league': league,
+                           'is_head_official': league.is_head_official(sh_user),
+                           'is_official': league.is_official(sh_user),
+                           'is_member': league.is_member(sh_user)})
         else:
             # Get request
-            is_head_official = league.is_head_official(sh_user)
-            is_official = league.is_official(sh_user)
-            is_member = league.is_member(sh_user)
-        return render(request, 'league_detail.html',
-                      {'league': league,
-                       'is_head_official': is_head_official,
-                       'is_official': is_official,
-                       'is_member': is_member})
+            return render(request, 'league_detail.html',
+                        {'league': league,
+                         'is_head_official': league.is_head_official(sh_user),
+                         'is_official': league.is_official(sh_user),
+                         'is_member': league.is_member(sh_user)})
     else:
         # User not logged in
         return render(request, 'league_detail.html',
