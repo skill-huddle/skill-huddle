@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
+
 {% block content %}
 {% if user.is_authenticated %}
 <h1>Hello {{ user.username }}!</h1>
@@ -32,14 +34,12 @@
 {% endif %}
 
 {% else %}
-<h1> Welcome to Skill Huddle</h1>
-<h3>
-    Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.
-</h3>
-<h3><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}">Register!</a></h3>
-
-<hr/>
-
+<div class="welcome-img" style="background-image: url('{% static 'skydiving.png' %}')"></div>
+<h1 class="welcome-text-primary">Welcome to Skill Huddle</h1>
+<h3 class="welcome-text-secondary">Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.</h3>
+<a class="btn btn-default" href="{% url 'login' %}">Log in</a>
+<a class="btn btn-warning" href="{% url 'register' %}">Register!</a>
+<div class="welcome-separator"></div>
 <h3>Terminology</h3>
 <ul>
     <li>SH User (SHU) - A visitor who does have an SH account.</li>
