@@ -399,18 +399,35 @@ def huddle_detail(request, huddle_id):
             })
 
     if request.method == "POST":
-        # Promoted or demoted the sh_user
+        # Clicked attend or attend as expert
         for key in request.POST.keys():
-            if "notattending" in key:
+            if "not_attending_as_expert" in key:
+                huddle.experts.remove(sh_user)
                 huddle.attendants.remove(sh_user)
-            elif "attending" in key:
+                huddle.save()
+            elif "not_attending_as_member" in key:
+                huddle.attendants.remove(sh_user)
+                huddle.save()
+            elif "attending_as_expert" in key:
+                huddle.experts.add(sh_user)
                 huddle.attendants.add(sh_user)
+                huddle.save()
+            elif "attending_as_member" in key:
+                huddle.attendants.add(sh_user)
+                huddle.save()
 
+    huddle_attendants = huddle.attendants.all()
+    huddle_experts = huddle.experts.all()
+    list_of_attendants = set(huddle_attendants) - set(huddle_experts)
+    not_attending = sh_user not in huddle_attendants and sh_user not in huddle_experts
     context = {
         'huddle': huddle,
-        'already_attending': huddle.is_attending(sh_user),
+        'not_attending': not_attending,
+        'attending_as_expert': huddle.is_expert(sh_user),
+        'is_official': huddle.league.is_official(sh_user),
+        'list_of_attendants': list_of_attendants,
     }
-
+    print(context)
     return render(request, 'huddle_detail.html', context)
 
 
