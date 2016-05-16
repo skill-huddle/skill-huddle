@@ -5,9 +5,10 @@
 {% block title %}Suggestion Detail{% endblock %}
 
 {% block content %}
-<h1>Suggestion for the {{ suggestion.league }} League</h1>
-<h2>{{ suggestion }}</h2>
+<h1>{{ suggestion }}</h1>
+<p>League: <a href="{% url 'league_detail' suggestion.league.id %}">{{ suggestion.league }}</a></p>
 <p>Description: {{ suggestion.description }}</p>
+<p>Suggested by: <a href="{% url 'profile' suggestion.suggested_by.id %}">{{ suggestion.suggested_by }}</a></p>
 <p>Is accepted: {{ suggestion.is_accepted }}</p>
 <p>Net vote: {{ suggestion.tally_votes }}</p>
 <p>Voting starts: {{ suggestion.voting_starts }}</p>
