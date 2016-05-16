@@ -3,7 +3,10 @@
 {% comment %}
 Template variables passed:
 huddle: Huddle object for huddle associated with this page
-already_attending: Bool indicating whether user is already attending huddle
+not_attending: Bool indicating whether the user is attending this huddle
+attending_as_expert: Bool indicating whether the user is attending this huddle as a expert
+is_official: Bool indicating whether the user is an official of the league
+list_of_attendants: list of attendants excluding experts
 {% endcomment %}
 
 {% load bootstrap3 %}
@@ -11,8 +14,8 @@ already_attending: Bool indicating whether user is already attending huddle
 {% block title %}Huddle Detail{% endblock %}
 
 {% block content %}
-<h1>{{ huddle }} Huddle</h1>
-<p>League: {{ huddle.league }}</p>
+<h1>{{ huddle }}</h1>
+<p>League: <a href="{% url 'league_detail' huddle.league.id %}">{{ huddle.league }}</a></p>
 <p>Address: {{ huddle.address }}</p>
 <p>Date: {{ huddle.date }}</p>
 <p>Description: {{ huddle.description }}</p>
@@ -21,38 +24,42 @@ already_attending: Bool indicating whether user is already attending huddle
 
 <form action="{% url 'huddle_detail' huddle.id %}" method="post">
     {% csrf_token %}
-    {% if not already_attending %}
+    {% if not_attending %}
     <p>Are you attending the huddle? </p>
-    <button class="btn btn-primary" type="submit" name="attending">Attend</button>
+    <button class="btn btn-primary" type="submit" name="attending_as_member">Attend</button>
+    {% if is_official %}
+        <button class="btn btn-primary" type="submit" name="attending_as_expert">Attend as expert</button>
+    {% endif %}
+    {% else %}
+    {% if attending_as_expert %}
+        <p>You are an expert for this huddle! Change of plans?</p>
+        <button class="btn btn-primary" type="submit" name="not_attending_as_expert">Can't Attend</button>
     {% else %}
     <p>You are attending the huddle! Change of plans?</p>
-    <button class="btn btn-primary" type="submit" name="notattending">Can't Attend</button>
+    <button class="btn btn-primary" type="submit" name="not_attending_as_member">Can't Attend</button>
+    {% endif %}
     {% endif %}
 </form>
 
 <h3> List of Experts Attending </h3>
-{% if huddle.experts.all %}
+{% for expert in huddle.experts.all %}
 <div class="list-group">
-    {% for expert in huddle.experts.all %}
     <a class="list-group-item" href="{% url 'profile' expert.id %}">
       {{ expert }}
     </a>
-    {% endfor %}
 </div>
-{% else %}
+{% empty %}
 <p>No experts attending this huddle :(.</p>
-{% endif %}
+{% endfor %}
 
 <h3> People Attending </h3>
-{% if huddle.attendants.all %}
+{% for attendant in list_of_attendants %}
 <div class="list-group">
-    {% for attendant in huddle.attendants.all %}
     <a class="list-group-item" href="{% url 'profile' attendant.id %}">
       {{ attendant }}
     </a>
-    {% endfor %}
 </div>
-{% else %}
+{% empty %}
 <p>No attendants in this huddle. Be the first to sign up!</p>
-{% endif %}
+{% endfor %}
 {% endblock %}
