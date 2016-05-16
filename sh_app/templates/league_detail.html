@@ -15,17 +15,21 @@ is_member: Bool indicating whether user is a member of this league
 {% block content %}
 <h1>{{ league }}</h1>
 <p>
-  {% if is_official %}
   {% if is_head_official %}
   <a class="btn btn-default" href="{% url 'manage_league_membership' league.id %}">Manage League Membership</a>
   {% endif %}
+  {% if is_official %}
   <a class="btn btn-default" href="{% url 'manage_league_suggestions' league.id %}">Manage League Suggestions</a>
-  {% elif is_member %}
-  <button class="btn btn-primary" name="submit">Leave league</button>
+  {% endif %}
+  {% if is_member %}
+  <form id="leave_league_form" method="post" action="{% url "league_detail" league.id %}">
+      {% csrf_token %}
+      <button class="btn btn-default" type="submit" name="leave">Leave league</button>
+  </form>
   {% else %}
   <form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
       {% csrf_token %}
-      <button class="btn btn-primary" type="submit" name="submit">Join league</button>
+      <button class="btn btn-primary" type="submit" name="join">Join league</button>
   </form>
 {% endif %}
 </p>
@@ -51,7 +55,9 @@ is_member: Bool indicating whether user is a member of this league
 {% endif %}
 
 <h2>Suggestions</h2>
+{% if is_member %}
 <p><a class="btn btn-primary" href="{% url 'create_suggestion' league.id %}">Create a suggestion</a></p>
+{% endif %}
 {% if league.suggestions.all %}
 <div class="list-group">
     {% for suggestion in league.suggestions.all %}
