@@ -13,8 +13,8 @@ list_of_attendants: list of attendants excluding experts
 {% block title %}Huddle Detail{% endblock %}
 
 {% block content %}
-<h1>{{ huddle }} Huddle</h1>
-<p>League: {{ huddle.league }}</p>
+<h1>{{ huddle }}</h1>
+<p>League: <a href="{% url 'league_detail' huddle.league.id %}">{{ huddle.league }}</a></p>
 <p>Address: {{ huddle.address }}</p>
 <p>Date: {{ huddle.date }}</p>
 <p>Description: {{ huddle.description }}</p>
