@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
+
 {% block content %}
 {% if user.is_authenticated %}
 <h1>Hello {{ user.username }}!</h1>
@@ -32,11 +34,15 @@
 {% endif %}
 
 {% else %}
-<h1> Welcome to Skill Huddle</h1>
+
+<div class="welcome-img" style="background-image: url('{% static 'skydiving.png' %}')"></div>
+<h1 class="welcome-text-primary">Welcome to Skill Huddle</h1>
+<h3 class="welcome-text-secondary">Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.</h3>
 <h3>
-    Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.
+    <a class="welcome-link-login" href="{% url 'login' %}">Log in</a>
+    <span class="welcome-text-minor">or</span>
+    <a class="welcome-link-register" href="{% url 'register' %}">Register!</a>
 </h3>
-<h3><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}">Register!</a></h3>
 
 <hr/>
 
