@@ -8,46 +8,66 @@ is_official: Bool indicating whether user is an official in this league
 is_member: Bool indicating whether user is a member of this league
 {% endcomment %}
 
+{% load bootstrap3 %}
+
 {% block title %}{{ league }}{% endblock %}
 
 {% block content %}
-<h1> {{ league }}</h1>
-{% if is_head_official %}
-<p><a href="{% url 'manage_league_membership' league.id %}">Manage League Membership</a></p>
+<h1>{{ league }}</h1>
+<p>
+  {% if is_head_official %}
+  <a class="btn btn-default" href="{% url 'manage_league_membership' league.id %}">Manage League Membership</a>
+  {% endif %}
+  {% if is_official %}
+  <a class="btn btn-default" href="{% url 'manage_league_suggestions' league.id %}">Manage League Suggestions</a>
+  {% endif %}
+  {% if is_member %}
+  <form id="leave_league_form" method="post" action="{% url "league_detail" league.id %}">
+      {% csrf_token %}
+      <button class="btn btn-default" type="submit" name="leave">Leave league</button>
+  </form>
+  {% else %}
+  <form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
+      {% csrf_token %}
+      <button class="btn btn-primary" type="submit" name="join">Join league</button>
+  </form>
 {% endif %}
-{% if is_official %}
-<p><a href="{% url 'manage_league_suggestions' league.id %}">Manage League Suggestions</a></p>
-{% endif %}
+</p>
 <p>{{ league.description }}</p>
 <p>Country: {{ league.get_country_display }}</p>
 <p>State: {{ league.get_state_display }}</p>
 <p>City: {{ league.city }}</p>
 <p>Created: {{ league.date_created }}</p>
 <p>Head official: <a href="{% url 'profile' league.head_official.id %}"> {{ league.head_official }} </a></p>
-<h2>Upcoming Huddles</h2>
-<ul>
+
+<h2>Huddles</h2>
+{% if league.huddles.all %}
+<div class="list-group">
     {% for huddle in league.huddles.all %}
-    <li>{{ huddle}} on {{ huddle.date }}</li>
-    {% empty %}
-    <li>No huddles exist for league {{ league }}</li>
+    <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
+      <span class="list-group-item-heading">{{ huddle}}</span> -
+      <span class="list-group-item-text">on {{ huddle.date }}</span>
+    </a>
     {% endfor %}
-</ul>
-<hr>
+</div>
+{% else %}
+<p>No huddles exist for league {{ league }}.</p>
+{% endif %}
+
 <h2>Suggestions</h2>
-<p><a href="{% url 'create_suggestion' league.id %}">Create Suggestion</a></p>
-<ul>
+{% if is_member %}
+<p><a class="btn btn-primary" href="{% url 'create_suggestion' league.id %}">Create a suggestion</a></p>
+{% endif %}
+{% if league.suggestions.all %}
+<div class="list-group">
     {% for suggestion in league.suggestions.all %}
-    <li><a href="{% url 'suggestion_detail' suggestion.id %}">{{ suggestion}}</a> with vote ending on {{suggestion.voting_ends}}</li>
-    {% empty %}
-    <li>
-    No suggestions exist for league {{ league }}.
-    </li>
+    <a class="list-group-item" href="{% url 'suggestion_detail' suggestion.id %}">
+      <span class="list-group-item-heading">{{ suggestion}}</span> -
+      <span class="list-group-item-text">voting ends {{suggestion.voting_ends}}</span>
+    </a>
     {% endfor %}
-</ul>
-{% if not is_member %}
-<form id="join_league_form" method="post" action="{% url "league_detail" league.id %}">
-    {% csrf_token %}
-    <input type="submit" name="submit" value="Join League"/>
-</form>
+</div>
+{% else %}
+<p>No suggestions exist for league {{ league }}.</p>
 {% endif %}
 {% endblock %}

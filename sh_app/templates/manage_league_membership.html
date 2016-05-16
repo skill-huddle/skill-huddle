@@ -8,33 +8,46 @@ list_of_officials: list of SH_Users who are officials in this league
 head_official: HO of the league
 {% endcomment %}
 
+{% load bootstrap3 %}
+
 {% block title %} Manage {{ league }} Members {% endblock %}
 
 {% block content %}
 <h1>Officials</h1>
-<ul>
+{% if list_of_officials %}
+<ul class="list-group">
     {% for sh_user in list_of_officials %}
-    <li> {{ sh_user }}
-        <form id="demote_form" method="POST" action="{% url "manage_league_membership" league.id %}">
-        {% csrf_token %}
-        <input type="submit" name="demote_{{ sh_user.id }}" value="Demote"/>
+    <li class="list-group-item">
+        <form method="POST" action="{% url 'manage_league_membership' league.id %}">
+            {% csrf_token %}
+            <span>{{ sh_user }}</span>
+            <button class="btn btn-default btn-sm" type="submit" name="demote_{{ sh_user.id }}">
+                <i class="fa fa-arrow-down" aria-hidden="true"></i> Demote
+            </button>
         </form>
     </li>
-    {% empty %}
-    <li>{{ league }} has no officials</li>
     {% endfor %}
 </ul>
+{% else %}
+<p>{{ league }} has no Officials (besides the Head Official).</p>
+{% endif %}
+
 <h1>Members</h1>
-<ul>
+{% if list_of_members %}
+<ul class="list-group">
     {% for sh_user in list_of_members %}
-    <li> {{ sh_user }}
-        <form id="promote_form" method="POST" action="{% url "manage_league_membership" league.id %}">
-        {% csrf_token %}
-        <input type="submit" name="promote_{{ sh_user.id }}" value="Promote"/>
+    <li class="list-group-item">
+        <form method="POST" action="{% url 'manage_league_membership' league.id %}">
+            {% csrf_token %}
+            <span>{{ sh_user }}</span>
+            <button class="btn btn-default btn-sm" type="submit" name="promote_{{ sh_user.id }}">
+                <i class="fa fa-arrow-up" aria-hidden="true"></i> Promote
+            </button>
         </form>
     </li>
-    {% empty %}
-    <li>{{ league }} has no members</li>
     {% endfor %}
 </ul>
+{% else %}
+<p>{{ league }} has no members (besides the Officials).</p>
+{% endif %}
 {% endblock %}

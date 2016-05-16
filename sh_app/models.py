@@ -106,7 +106,7 @@ class Suggestion(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=260)
     is_accepted = models.BooleanField(default=False)
-    is_achieved = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
     voting_starts = models.DateTimeField(default=timezone.now)
     voting_ends = models.DateTimeField(default=set_default_vote_end_time, validators=[validate_vote_time])
 
@@ -135,3 +135,7 @@ class Suggestion(models.Model):
         num_downvotes = self.downvotes.count()
         tally = num_upvotes - num_downvotes
         return tally
+
+    def is_voting_ended(self):
+        return self.voting_ends < timezone.now()
+

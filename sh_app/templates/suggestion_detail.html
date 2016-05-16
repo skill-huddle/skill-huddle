@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
+{% load bootstrap3 %}
+
 {% block title %}Suggestion Detail{% endblock %}
 
 {% block content %}
-<h1>Suggestion for the {{ suggestion.league }} League</h1>
-<h2>{{ suggestion }}</h2>
+<h1>{{ suggestion }}</h1>
+<p>League: <a href="{% url 'league_detail' suggestion.league.id %}">{{ suggestion.league }}</a></p>
 <p>Description: {{ suggestion.description }}</p>
+<p>Suggested by: <a href="{% url 'profile' suggestion.suggested_by.id %}">{{ suggestion.suggested_by }}</a></p>
 <p>Is accepted: {{ suggestion.is_accepted }}</p>
 <p>Net vote: {{ suggestion.tally_votes }}</p>
 <p>Voting starts: {{ suggestion.voting_starts }}</p>
@@ -14,16 +17,16 @@
     {% csrf_token %}
     {% if not already_voted %}
     <p>Would you like to vote?</p>
-    <input type="submit" name="upvote" value="Up vote"/>
-    <input type="submit" name="downvote" value="Down vote"/>
+    <button class="btn btn-default" type="submit" name="upvote" value="Up vote"><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></button>
+    <button class="btn btn-default" type="submit" name="downvote" value="Down vote"><i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i></button>
     {% elif already_upvoted %}
-    <p>Change your vote?</p>
-    <input type="submit" disabled name="upvote" value="Up vote"/>
-    <input type="submit" name="downvote" value="Down vote"/>
+    <p>You already upvoted. Change your vote?</p>
+    <button class="btn btn-default" type="submit" name="upvote" disabled><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></button>
+    <button class="btn btn-default" type="submit" name="downvote"><i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i></button>
     {% else %}
-    <p>Change your vote?</p>
-    <input type="submit" name="upvote" value="Up vote"/>
-    <input type="submit" disabled name="downvote" value="Down vote"/>
+    <p>You already downvoted. Change your vote?</p>
+    <button class="btn btn-default" type="submit" name="upvote"><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></button>
+    <button class="btn btn-default" type="submit" name="downvote" disabled><i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i></button>
     {% endif %}
 </form>
 {% endblock %}

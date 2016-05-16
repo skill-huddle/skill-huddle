@@ -1,31 +1,27 @@
 {% extends 'base.html' %}
 
+{% load bootstrap3 %}
+
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<h1>Register with SH</h1>
-{% if registered %}
-SH says: <strong>thank you for registering!</strong>
-<a href="/">Return to the homepage.</a><br />
-{% else %}
-SH says: <strong>register here!</strong><br />
-<form id="user_form" method="post" action="{% url "register" %}">
-<form id="sh_user_form" method="post" action="{% url "register" %}">
-    {% csrf_token %}
-
-    {% comment %}
-    Display each form. The as_p method wraps each element in a paragraph
-    (<p>) element. This ensures each element appears on a new line,
-    making everything look neater.
-    {% endcomment %}
-
-    {{ user_form.as_p }}
-
-    {{ sh_user_form.as_p}}
-
-    {#  Provide a button to click to submit the form. #}
-    <input type="submit" name="submit" value="Register" />
-</form>
-</form>
+<div class="form-wrapper">
+  {% if registered %}
+  <h1>Thank you for registering</h1>
+  <h4>You can now <a href="{% url 'login' %}">login</a>.</h4>
+  {% else %}
+  <h1>User registration</h1>
+  <form method="post" action="{% url "register" %}">
+    <form method="post" action="{% url "register" %}">
+        {% csrf_token %}
+        <input class="form-control" type="text" name="first_name" placeholder="First name" required autofocus/>
+        <input class="form-control" type="text" name="last_name" placeholder="Last name" required/>
+        <input class="form-control" type="text" name="username" placeholder="Username" required/>
+        <input class="form-control" type="email" name="email" placeholder="Email" required/>
+        <input class="form-control" type="password" name="password" placeholder="Password" required/>
+        <button class="form-submit btn btn-lg btn-primary btn-block" type="submit" name="submit">Register</button>
+    </form>
+  </form>
+</div>
 {% endif %}
 {% endblock %}

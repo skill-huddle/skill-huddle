@@ -16,13 +16,6 @@ def index(request):
     """
     return render(request, "index.html")
 
-
-def about(request):
-    """
-    Serve view for about page
-    """
-    return render(request, "about.html")
-
 def register(request):
 
     # A boolean value for telling the template whether the registration was successful.
@@ -105,22 +98,29 @@ def user_login(request):
                 return HttpResponseRedirect('/')
             else:
                 # An inactive account was used - no logging in!
-                return HttpResponse("Your SH account is disabled.")
+                return render(request, 'redirect.html', {
+                    'title': 'Account Disabled',
+                    'heading': 'Banned',
+                    'content': 'Your account has been disabled. Contact an administrator.',
+                    'url_arg': 'index',
+                    'url_text': 'Back to homepage'
+                })
+
         else:
             # Bad login details were provided. So we can't log the user in.
-            print("Invalid login details: {0}, {1}".format(username, password))
-            return HttpResponse("Invalid login details supplied.")
-
+            return render(request, 'redirect.html', {
+                'title': 'Invalid Login',
+                'heading': 'Incorrect Login',
+                'content': 'Invalid login details for: {0}'.format(username),
+                'url_arg': 'login',
+                'url_text': 'Back to login'
+            })
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
         return render(request, 'login.html', {})
-
-@login_required
-def restricted(request):
-    return HttpResponse("Since you're logged in, you can see this text!")
 
 @login_required
 def profile(request, sh_user_id):
@@ -195,7 +195,14 @@ def create_suggestion(request, league_id):
             suggestion_form = SuggestionForm()
 
     else:
-        return HttpResponse("You must be a league member of league {} to view this page".format(league.name))
+        return render(request, 'redirect_with_arg.html', {
+            'title': 'Restricted',
+            'heading': 'Page Unavailable',
+            'content': 'You must be a member of {} to create a suggestion'.format(league.name),
+            'url_arg': 'league_detail',
+            'url_arg_id': league_id,
+            'url_text': 'Back to {}'.format(league)
+            })
 
     return render(request, 'create_suggestion.html', {'suggestion_form': suggestion_form, 'league': league})
 
@@ -204,7 +211,14 @@ def suggestion_detail(request, suggestion_id):
     suggestion = get_object_or_404(Suggestion, pk=suggestion_id)
     sh_user = request.user.sh_user
     if not suggestion.league.is_member(sh_user):
-        return HttpResponse("You must be a league member of league {} to view this page".format(suggestion.league.name))
+        return render(request, 'redirect_with_arg.html', {
+            'title': 'Restricted',
+            'heading': 'Page Unavailable',
+            'content': 'You must be a member of {} to view suggestion details'.format(suggestion.league.name),
+            'url_arg': 'league_detail',
+            'url_arg_id': suggestion.league.id,
+            'url_text': 'Back to {}'.format(suggestion.league)
+            })
 
     if request.method == 'POST':
         for key in request.POST.keys():
@@ -235,22 +249,34 @@ def league_detail(request, league_id):
     if request.user.is_authenticated():
         sh_user = request.user.sh_user
         if request.method == "POST":
-            # Clicked join league
-            league.members.add(sh_user)
+            # Clicked join or leave league
+            if "join" in request.POST.keys():
+                league.members.add(sh_user)
+            else:
+                # Clicked leave
+                for suggestion in league.suggestions.all():
+                    if suggestion.is_suggested_by(sh_user):
+                        suggestion.delete()
+                league.members.remove(sh_user)
+                if league.is_official(sh_user):
+                    league.officials.remove(sh_user)
+                if league.is_head_official(sh_user):
+                    league.delete()
+                    return HttpResponseRedirect(reverse('index'))
+
             league.save()
-            is_member = True
-            is_head_official = False
-            is_official = False
+            return render(request, 'league_detail.html',
+                          {'league': league,
+                           'is_head_official': league.is_head_official(sh_user),
+                           'is_official': league.is_official(sh_user),
+                           'is_member': league.is_member(sh_user)})
         else:
             # Get request
-            is_head_official = league.is_head_official(sh_user)
-            is_official = league.is_official(sh_user)
-            is_member = league.is_member(sh_user)
-        return render(request, 'league_detail.html',
-                      {'league': league,
-                       'is_head_official': is_head_official,
-                       'is_official': is_official,
-                       'is_member': is_member})
+            return render(request, 'league_detail.html',
+                        {'league': league,
+                         'is_head_official': league.is_head_official(sh_user),
+                         'is_official': league.is_official(sh_user),
+                         'is_member': league.is_member(sh_user)})
     else:
         # User not logged in
         return render(request, 'league_detail.html',
@@ -286,7 +312,14 @@ def manage_league_membership(request, league_id):
                        'head_official': sh_user})
     else:
         # User is not a head official
-        return HttpResponse("You must be a head official of league {} to view this page".format(league.name))
+        return render(request, 'redirect_with_arg.html', {
+            'title': 'Restricted',
+            'heading': 'Page Unavailable',
+            'content': 'You must be a head official of {} to manage league members'.format(league.name),
+            'url_arg': 'league_detail',
+            'url_arg_id': league_id,
+            'url_text': 'Back to {}'.format(league)
+            })
 
 @login_required
 def manage_league_suggestions(request, league_id):
@@ -294,7 +327,14 @@ def manage_league_suggestions(request, league_id):
 
     # Redirect if not official
     if not league.is_official(request.user.sh_user):
-        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+        return render(request, 'redirect_with_arg.html', {
+            'title': 'Restricted',
+            'heading': 'Page Unavailable',
+            'content': 'You must be an official of {} to manage league suggestions'.format(league.name),
+            'url_arg': 'league_detail',
+            'url_arg_id': league.id,
+            'url_text': 'Back to {}'.format(league)
+            })
 
     # Update all suggestion approval statuses for the league
     suggestions_vote_ended_not_approved = league.suggestions.filter(voting_ends__lte=timezone.now()).filter(is_accepted=False)
@@ -303,7 +343,7 @@ def manage_league_suggestions(request, league_id):
             suggestion.is_accepted = True
             suggestion.save()
 
-    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_achieved=False)
+    list_approved_suggestions = league.suggestions.filter(is_accepted=True).filter(is_archived=False)
     return render(request, 'manage_league_suggestions.html',
                   {'league': league,
                    'list_of_approved_suggestions': list_approved_suggestions})
@@ -314,7 +354,14 @@ def create_huddle(request, suggestion_id):
 
     # Redirect if not official
     if not suggestion.league.is_official(request.user.sh_user):
-        return HttpResponse("You must be an official of league {} to view this page".format(league.name))
+        return render(request, 'redirect_with_arg.html', {
+            'title': 'Restricted',
+            'heading': 'Page Unavailable',
+            'content': 'You must be an official of {} to create a huddle'.format(suggestion.league.name),
+            'url_arg': 'league_detail',
+            'url_arg_id': suggestion.league.id,
+            'url_text': 'Back to {}'.format(suggestion.league)
+            })
 
     if request.method == 'POST':
         huddle_form = HuddleForm(data=request.POST)
@@ -325,7 +372,7 @@ def create_huddle(request, suggestion_id):
             huddle.experts.add(request.user.sh_user)
             huddle.attendants.add(request.user.sh_user)
             huddle.save()
-            suggestion.is_achieved = True
+            suggestion.is_archived = True
             suggestion.save()
 
             return HttpResponseRedirect(reverse('league_detail', args=[suggestion.league.id]))
@@ -340,3 +387,50 @@ def create_huddle(request, suggestion_id):
         request,
         'create_huddle.html',
         {'huddle_form': huddle_form, 'suggestion_id': suggestion_id})
+
+@login_required
+def huddle_detail(request, huddle_id):
+    huddle = get_object_or_404(Huddle, pk=huddle_id)
+    sh_user = request.user.sh_user
+    if not huddle.league.is_member(sh_user):
+        return render(request, 'redirect_with_arg.html', {
+            'title': 'Restricted',
+            'heading': 'Page Unavailable',
+            'content': 'You must be a member of {} to view huddle details'.format(huddle.league.name),
+            'url_arg': 'league_detail',
+            'url_arg_id': huddle.league.id,
+            'url_text': 'Back to {}'.format(huddle.league)
+            })
+
+    if request.method == "POST":
+        # Clicked attend or attend as expert
+        for key in request.POST.keys():
+            if "not_attending_as_expert" in key:
+                huddle.experts.remove(sh_user)
+                huddle.attendants.remove(sh_user)
+                huddle.save()
+            elif "not_attending_as_member" in key:
+                huddle.attendants.remove(sh_user)
+                huddle.save()
+            elif "attending_as_expert" in key:
+                huddle.experts.add(sh_user)
+                huddle.attendants.add(sh_user)
+                huddle.save()
+            elif "attending_as_member" in key:
+                huddle.attendants.add(sh_user)
+                huddle.save()
+
+    huddle_attendants = huddle.attendants.all()
+    list_of_attendants = set(huddle_attendants) - set(huddle.experts.all())
+    not_attending = sh_user not in huddle_attendants
+    context = {
+        'huddle': huddle,
+        'not_attending': not_attending,
+        'attending_as_expert': huddle.is_expert(sh_user),
+        'is_official': huddle.league.is_official(sh_user),
+        'list_of_attendants': list_of_attendants,
+    }
+    print(context)
+    return render(request, 'huddle_detail.html', context)
+
+

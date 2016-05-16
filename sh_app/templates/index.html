@@ -1,10 +1,75 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
+
 {% block content %}
-<h1> Skill Huddle</h1>
 {% if user.is_authenticated %}
 <h1>Hello {{ user.username }}!</h1>
+<h3>Your Upcoming Huddles</h3>
+{% if user.sh_user.attending.all %}
+<div class="list-group">
+    {% for huddle in user.sh_user.attending.all %}
+    <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
+        <span class="list-group-item-heading">{{ huddle}}</span> -
+        <span class="list-group-item-text">{{huddle.league}} - on {{ huddle.date }}</span>
+    </a>
+    {% endfor %}
+</div>
 {% else %}
-<h1>Who are you? Log in or Register!</h1>
+<p>You are not attending any huddles!</p>
+{% endif %}
+
+<h3>Your Suggestions</h3>
+{% if user.sh_user.suggestions.all %}
+<div class="list-group">
+    {% for suggestion in user.sh_user.suggestions.all %}
+    <a class="list-group-item" href="{% url 'suggestion_detail' suggestion.id %}">
+        <span class="list-group-item-heading">{{ suggestion}}</span> -
+        <span class="list-group-item-text"> {{suggestion.league}} - ends {{ suggestion.voting_ends }}</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>You did not make any suggestions to any leagues!</p>
+{% endif %}
+
+<h3>Suggestions Currently Being Voted</h3>
+{% if user.sh_user.LM_of.all %}
+<div class="list-group">
+    {% for league in user.sh_user.LM_of.all %}
+        {% if league.suggestions.all %}
+            {% for suggestion in league.suggestions.all %}
+                {% if not suggestion.is_voting_ended %}
+                    <a class="list-group-item" href="{% url 'suggestion_detail' suggestion.id %}">
+                        <span class="list-group-item-heading">{{ suggestion}}</span> -
+                        <span class="list-group-item-text"> {{suggestion.league}} - ends {{ suggestion.voting_ends }}</span>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+</div>
+{% else %}
+<p>You are not part of any leagues!</p>
+{% endif %}
+
+{% else %}
+<div class="welcome-img" style="background-image: url('{% static 'skydiving.png' %}')"></div>
+<h1 class="welcome-text-primary">Welcome to Skill Huddle</h1>
+<h3 class="welcome-text-secondary">Skill Huddle is a web application that provides a way to find and manage in-person meetings between nearby people who have a shared interest in learning specific skills.</h3>
+<a class="btn btn-default" href="{% url 'login' %}">Log in</a>
+<a class="btn btn-warning" href="{% url 'register' %}">Register!</a>
+<div class="welcome-separator"></div>
+<h3>Terminology</h3>
+<ul>
+    <li>SH User (SHU) - A visitor who does have an SH account.</li>
+    <li>League - A community of people who meet together.</li>
+    <li>Suggestion - A proposal for a Huddle that is voted on by League Members.</li>
+    <li>Huddle - A meeting among League Members.</li>
+    <li>League Member (LM) - An SHU that belongs to a specific League.</li>
+    <li>Official - A skilled League Member who leads Huddles.</li>
+    <li>Head Official (HO) - The managing Official of a League.</li>
+</ul>
+
 {% endif %}
 {% endblock %}
