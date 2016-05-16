@@ -135,3 +135,7 @@ class Suggestion(models.Model):
         num_downvotes = self.downvotes.count()
         tally = num_upvotes - num_downvotes
         return tally
+
+    def is_voting_ended(self):
+        return self.voting_ends < timezone.now()
+

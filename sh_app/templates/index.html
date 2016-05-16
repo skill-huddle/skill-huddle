@@ -11,7 +11,7 @@
     {% for huddle in user.sh_user.attending.all %}
     <a class="list-group-item" href="{% url 'huddle_detail' huddle.id %}">
         <span class="list-group-item-heading">{{ huddle}}</span> -
-        <span class="list-group-item-text">on {{ huddle.date }}</span>
+        <span class="list-group-item-text">{{huddle.league}} - on {{ huddle.date }}</span>
     </a>
     {% endfor %}
 </div>
@@ -31,6 +31,26 @@
 </div>
 {% else %}
 <p>You did not make any suggestions to any leagues!</p>
+{% endif %}
+
+<h3>Suggestions Currently Being Voted</h3>
+{% if user.sh_user.LM_of.all %}
+<div class="list-group">
+    {% for league in user.sh_user.LM_of.all %}
+        {% if league.suggestions.all %}
+            {% for suggestion in league.suggestions.all %}
+                {% if not suggestion.is_voting_ended %}
+                    <a class="list-group-item" href="{% url 'suggestion_detail' suggestion.id %}">
+                        <span class="list-group-item-heading">{{ suggestion}}</span> -
+                        <span class="list-group-item-text"> {{suggestion.league}} - ends {{ suggestion.voting_ends }}</span>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+</div>
+{% else %}
+<p>You are not part of any leagues!</p>
 {% endif %}
 
 {% else %}
